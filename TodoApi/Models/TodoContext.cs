@@ -1,0 +1,17 @@
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace TodoApi.Models
+{
+    public class TodoContext : DbContext
+    {
+        public TodoContext(DbContextOptions<TodoContext> options)
+            : base(options)
+        {
+        }
+
+        public DbSet<TodoItem> TodoItems { get; set; }
+
+        /*protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            => optionsBuilder.UseNpgsql("Host=my_host;Database=my_db;Username=my_user;Password=my_pw");*/
+    }
+}
