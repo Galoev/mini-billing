@@ -3,10 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.EntityFrameworkCore;
-using TodoApi.Models;
 
-namespace TodoApi
+namespace Billing.WebApi
 {
     public class Startup
     {
@@ -19,11 +17,7 @@ namespace TodoApi
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
-            /*services.AddDbContext<TodoContext>(opt =>
-                                               opt.UseNpgsql(Configuration.GetConnectionString("TodoContext")));*/
-            services.AddDbContext<TodoContext>(opt =>
-                                   opt.UseInMemoryDatabase("TodoList"));
+        { 
             services.AddControllers();
         }
 
