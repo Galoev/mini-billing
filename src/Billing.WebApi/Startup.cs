@@ -3,6 +3,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
+
+using Billing.WebApi.DAL.EFCore;
+using Billing.WebApi.DAL;
 
 namespace Billing.WebApi
 {
@@ -17,7 +21,10 @@ namespace Billing.WebApi
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        { 
+        {
+            services.AddDbContext<BillingContext>(opt =>
+                                   opt.UseInMemoryDatabase("OrdersList"));
+            services.AddScoped<IStorage, EFCoreStorage>();
             services.AddControllers();
         }
 
