@@ -17,30 +17,20 @@ namespace Billing.WebApi.Client
         public string BaseUrl
         {
             get { return _baseUrl; }
-            set { _baseUrl = value; }
+            private set { _baseUrl = value; }
         }
 
-        public async Task<Message> GetMessageAsync(string name)
+        public async Task<MessageDto> GetMessageAsync(string name)
         {
             using (var client = new HttpClient())
             {
-                UriBuilder builder = new UriBuilder(BaseUrl + "/api/simple");
+                var builder = new UriBuilder(BaseUrl + "/api/simple");
                 builder.Query = $"name={name}";
 
-                MessageDTO message = null;
                 HttpResponseMessage response = await client.GetAsync(builder.Uri);
-                if (response.IsSuccessStatusCode)
-                {
-                    message = await response.Content.ReadAsAsync<MessageDTO>();
-                }
-                return messageFromDTO(message);
+                var messageDto = response.IsSuccessStatusCode ? await response.Content.ReadAsAsync<MessageDto>() : null;
+                return messageDto;
             }
         }
-
-        private static Message messageFromDTO(MessageDTO messageDTO) =>
-            new Message
-            {
-                message = messageDTO.message
-            };
     }
 }

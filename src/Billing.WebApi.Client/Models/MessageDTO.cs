@@ -1,6 +1,6 @@
 ﻿namespace Billing.WebApi.Client.Models
 {
-    class MessageDTO
+    public class MessageDto
     {
         public string message;
     }

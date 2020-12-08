@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.EntityFrameworkCore;
 
-using Billing.WebApi.DAL.EFCore;
+using Microsoft.EntityFrameworkCore;
 using Billing.WebApi.DAL;
+using Billing.WebApi.DAL.Models;
 
 namespace Billing.WebApi
 {
@@ -23,8 +23,8 @@ namespace Billing.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<BillingContext>(opt =>
-                                   opt.UseInMemoryDatabase("OrdersList"));
-            services.AddScoped<IStorage, EFCoreStorage>();
+                                   opt.UseNpgsql(Configuration.GetConnectionString("BillingContext")));
+            services.AddScoped<IOrdersRepository, EFCoreOrdersRepository>();
             services.AddControllers();
         }
 
@@ -39,8 +39,6 @@ namespace Billing.WebApi
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
-            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
