@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Billing.WebApi.Client.Models;
 
 namespace Billing.WebApi.Console
 {
@@ -6,20 +8,8 @@ namespace Billing.WebApi.Console
     {
         static void Main(string[] args)
         {
-            var client = new Client.SimpleClient("https://localhost:44311");
-            System.Console.WriteLine("Enter your name:");
-            var name = System.Console.ReadLine();
-            try
-            {
-                var message = client.GetMessageAsync(name).Result;
-                System.Console.WriteLine(message.message);
-            }
-            catch (Exception e)
-            {
-                System.Console.WriteLine(e.Message);
-            }
-
-            System.Console.ReadLine();
+            var console = new Console("https://localhost:5001");
+            console.Run();
         }
     }
 }
