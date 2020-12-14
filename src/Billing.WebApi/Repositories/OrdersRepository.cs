@@ -26,8 +26,8 @@ namespace Billing.WebApi.Repositories
                 CustomerId = orderToCreate.Customer.Id,
                 OrderDate = orderToCreate.OrderDate,
                 Price = price,
-                PaymentStatus = Convert.ToInt32(orderToCreate.PaymentStatus),
-                DeliverStatus = Convert.ToInt32(orderToCreate.DeliverStatus),
+                PaymentStatus = orderToCreate.PaymentStatus,
+                DeliverStatus = orderToCreate.DeliveryStatus,
                 Customer = customer
             };
 
@@ -83,8 +83,8 @@ namespace Billing.WebApi.Repositories
                 Id = orderEntity.Id,
                 OrderDate = orderEntity.OrderDate,
                 Price = orderEntity.Price,
-                PaymentStatus = (PaymentStatus)orderEntity.PaymentStatus,
-                DeliverStatus = (DeliveryStatus)orderEntity.DeliverStatus,
+                PaymentStatus = orderEntity.PaymentStatus,
+                DeliveryStatus = orderEntity.DeliverStatus,
                 Customer = customer,
                 Goods = goods
             };

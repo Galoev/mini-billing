@@ -12,10 +12,12 @@ namespace Billing.WebApi.Controllers
     public class BillingController : ControllerBase
     {
         private readonly IOrdersRepository ordersRepository;
+        private readonly IOrderConverter orderConverter;
 
-        public BillingController(IOrdersRepository ordersRepository)
+        public BillingController(IOrdersRepository ordersRepository, IOrderConverter orderConverter)
         {
             this.ordersRepository = ordersRepository;
+            this.orderConverter = orderConverter;
         }
 
         // GET: api/<BillingController>
@@ -54,16 +56,5 @@ namespace Billing.WebApi.Controllers
         {
             ordersRepository.Delete(id);
         }
-
-        private static Order DtoToOrder(OrderDto orderDto)
-        {
-            throw new NotImplementedException();
-        }
-
-        private static OrderDto OrderToDto(Order order)
-        {
-            throw new NotImplementedException();
-        }
-
     }
 }

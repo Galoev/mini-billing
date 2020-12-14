@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using Billing.WebApi.Models;
+﻿using Billing.WebApi.Models;
 
 namespace Billing.WebApi.Repositories
 {
