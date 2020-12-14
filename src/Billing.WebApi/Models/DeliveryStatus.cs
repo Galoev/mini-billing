@@ -2,8 +2,8 @@
 {
     public enum DeliveryStatus
     {
-        DeliveryWaiting,
-        Delivering,
-        Delivered
+        DeliveryWaiting = 1,
+        Delivering = 2,
+        Delivered = 3
     }
 }

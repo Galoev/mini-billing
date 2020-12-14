@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Billing.WebApi.Models;
+using System.Collections.Generic;
+using System;
 
 #nullable disable
 
@@ -11,9 +13,8 @@ namespace Billing.WebApi.Repositories.Models
             GoodsComponents = new HashSet<GoodsComponentLinkDbo>();
         }
 
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public decimal Price { get; set; }
-        public int QuantityUnit { get; set; }
         public string Description { get; set; }
 
         public virtual ICollection<GoodsComponentLinkDbo> GoodsComponents { get; set; }

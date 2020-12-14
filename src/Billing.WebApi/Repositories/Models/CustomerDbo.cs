@@ -12,7 +12,7 @@ namespace Billing.WebApi.Repositories.Models
             Orders = new HashSet<OrderDbo>();
         }
 
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public string Phone { get; set; }
         public string AdditionalInfo { get; set; }

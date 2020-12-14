@@ -2,8 +2,8 @@
 {
     public enum QuantityType
     {
-        Kilogram,
-        Litre,
-        Piece
+        Kilogram = 1,
+        Litre = 2,
+        Piece = 3
     }
 }

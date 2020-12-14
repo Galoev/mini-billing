@@ -2,7 +2,7 @@
 {
     public enum PaymentStatus
     {
-        Paid,
-        Unpaid
+        Paid = 1,
+        Unpaid = 2
     }
 }

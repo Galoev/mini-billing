@@ -1,14 +1,12 @@
 ﻿using System.Collections.Generic;
+using System;
 
 namespace Billing.WebApi.Models
 {
     public class Good
     {
-        public int Id { get; set; }
-        public decimal Price { get; set; }
-
-        public int Quantity { get; set; }
-
+        public Guid Id { get; set; }
+        public decimal UnitPrice { get; set; }
         public QuantityType QuantityType { get; set; }
         public string Description { get; set; }
 

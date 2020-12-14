@@ -1,12 +1,12 @@
-﻿namespace Billing.WebApi.Models
+﻿using System;
+
+namespace Billing.WebApi.Models
 {
-    public class GoodComponent
+    public class Component
     {
-        public int Id { get; set; }
-        public decimal PriceForUnit { get; set; }
+        public Guid Id { get; set; }
+        public decimal UnitPrice { get; set; }
         public string Description { get; set; }
         public QuantityType QuantityType { get; set; }
-
-        public int Quantity { get; set; }
     }
 }
