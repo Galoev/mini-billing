@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using Billing.WebApi.DAL;
+using Billing.WebApi.Repositories;
 using Billing.WebApi.Models;
 using Billing.WebApi.Client.Models;
 

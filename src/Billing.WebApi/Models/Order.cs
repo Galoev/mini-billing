@@ -10,8 +10,8 @@ namespace Billing.WebApi.Models
 
         public decimal Price { get; set; }
         public PaymentStatus PaymentStatus { get; set; }
-        public DeliverStatus DeliverStatus { get; set; }
+        public DeliveryStatus DeliverStatus { get; set; }
         public Customer Customer { get; set; }
-        public ICollection<Goods> Goods { get; set; }
+        public ICollection<Good> Goods { get; set; }
     }
 }

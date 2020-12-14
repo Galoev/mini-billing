@@ -1,9 +1,9 @@
 ﻿namespace Billing.WebApi.Client.Models
 {
-    public enum DeliverStatus
+    public enum DeliveryStatus
     {
-        AwaitingDispatch,
-        InTransit,
+        DeliveryWaiting,
+        Delivering,
         Delivered
     }
 }

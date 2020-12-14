@@ -2,16 +2,16 @@
 
 namespace Billing.WebApi.Models
 {
-    public class Goods
+    public class Good
     {
         public int Id { get; set; }
         public decimal Price { get; set; }
 
-        public int QuantityInOrder { get; set; }
+        public int Quantity { get; set; }
 
-        public Quantity QuantityUnit { get; set; }
+        public QuantityType QuantityType { get; set; }
         public string Description { get; set; }
 
-        public ICollection<Component> Components { get; set; }
+        public ICollection<GoodComponent> Components { get; set; }
     }
 }

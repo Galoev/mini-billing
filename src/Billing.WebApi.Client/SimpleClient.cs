@@ -28,8 +28,7 @@ namespace Billing.WebApi.Client
                 builder.Query = $"name={name}";
 
                 HttpResponseMessage response = await client.GetAsync(builder.Uri);
-                var messageDto = response.IsSuccessStatusCode ? await response.Content.ReadAsAsync<MessageDto>() : null;
-                return messageDto;
+                return response.IsSuccessStatusCode ? await response.Content.ReadAsAsync<MessageDto>() : null;
             }
         }
     }

@@ -1,6 +1,6 @@
 ﻿namespace Billing.WebApi.Models
 {
-    public enum Quantity
+    public enum QuantityType
     {
         Kilogram,
         Litre,

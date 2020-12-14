@@ -4,16 +4,11 @@ using System.Linq;
 using System.Linq.Expressions;
 using Billing.WebApi.Models;
 
-namespace Billing.WebApi.DAL
+namespace Billing.WebApi.Repositories
 {
     public interface IOrdersRepository
     {
         decimal Create(Order orderToCreate);
-
-        List<Order> Get(Expression<Func<Order, bool>> filter = null, 
-            Func<IQueryable<Order>, IOrderedQueryable<Order>> orderBy = null);
-
-        List<Component> GetComponents();
 
         Order Get(int orderId);
 

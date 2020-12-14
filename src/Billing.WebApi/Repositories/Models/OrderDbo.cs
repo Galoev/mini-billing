@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace Billing.WebApi.DAL.Models
+namespace Billing.WebApi.Repositories.Models
 {
-    public partial class OrderEntity
+    public partial class OrderDbo
     {
-        public OrderEntity()
+        public OrderDbo()
         {
-            OrderGoods = new HashSet<OrderGoods>();
+            OrderGoods = new HashSet<OrderGoodsLinkDbo>();
         }
 
         public int Id { get; set; }
@@ -19,7 +19,7 @@ namespace Billing.WebApi.DAL.Models
         public int PaymentStatus { get; set; }
         public int DeliverStatus { get; set; }
 
-        public virtual CustomerEntity Customer { get; set; }
-        public virtual ICollection<OrderGoods> OrderGoods { get; set; }
+        public virtual CustomerDbo Customer { get; set; }
+        public virtual ICollection<OrderGoodsLinkDbo> OrderGoods { get; set; }
     }
 }

@@ -1,27 +1,27 @@
-﻿using Billing.WebApi.DAL.Models;
+﻿using Billing.WebApi.Repositories.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Billing.WebApi.Models;
 
-namespace Billing.WebApi.DAL
+namespace Billing.WebApi.Repositories
 {
-    public class EFCoreOrdersRepository : IOrdersRepository
+    public class OrdersRepository : IOrdersRepository
     {
-        private readonly BillingContext _billingContext;
-        public EFCoreOrdersRepository(BillingContext billingContext)
+        private readonly BillingContext billingContext;
+        public OrdersRepository(BillingContext billingContext)
         {
-            _billingContext = billingContext;
+            this.billingContext = billingContext;
         }
         public decimal Create(Order orderToCreate)
         {
-            var customer = _billingContext.Customers.First(c => c.Id == orderToCreate.Customer.Id);
+            var customer = billingContext.Customers.First(c => c.Id == orderToCreate.Customer.Id);
 
             var price = orderToCreate.Goods.Aggregate(0.0M, 
-                (sumPrice, nextGoods) => sumPrice + nextGoods.QuantityInOrder * nextGoods.Price); ;
+                (sumPrice, nextGoods) => sumPrice + nextGoods.Quantity * nextGoods.Price); ;
 
-            var order = new OrderEntity()
+            var order = new OrderDbo()
             {
                 CustomerId = orderToCreate.Customer.Id,
                 OrderDate = orderToCreate.OrderDate,
@@ -31,42 +31,37 @@ namespace Billing.WebApi.DAL
                 Customer = customer
             };
 
-            var goods = _billingContext.Goods.Where(item => orderToCreate.Goods.Any(g => g.Id == item.Id));
-            var rangeToAdd = goods.Select(item => new OrderGoods
+            var goods = billingContext.Goods.Where(item => orderToCreate.Goods.Any(g => g.Id == item.Id));
+            var rangeToAdd = goods.Select(item => new OrderGoodsLinkDbo
             {
                 Order = order,
                 Goods = item,
-                Quantity = orderToCreate.Goods.First(g => g.Id == item.Id).QuantityInOrder
+                Quantity = orderToCreate.Goods.First(g => g.Id == item.Id).Quantity
             });
 
-            _billingContext.OrderGoods.AddRange(rangeToAdd);
-            _billingContext.SaveChanges();
+            billingContext.OrderGoods.AddRange(rangeToAdd);
+            billingContext.SaveChanges();
 
             return price;
         }
 
         public void Delete(Order orderToDelete)
         {
-            var order = _billingContext.Orders.First(item => item.Id == orderToDelete.Id);
-            _billingContext.Orders.Remove(order);
-            _billingContext.SaveChanges();
+            var order = billingContext.Orders.First(item => item.Id == orderToDelete.Id);
+            billingContext.Orders.Remove(order);
+            billingContext.SaveChanges();
         }
 
         public void Delete(int id)
         {
-            var order = _billingContext.Orders.Find(id);
-            _billingContext.Orders.Remove(order);
-            _billingContext.SaveChanges();
-        }
-
-        public List<Order> Get(Expression<Func<Order, bool>> filter = null, Func<IQueryable<Order>, IOrderedQueryable<Order>> orderBy = null)
-        {
-            throw new NotImplementedException();
+            var order = billingContext.Orders.Find(id);
+            billingContext.Orders.Remove(order);
+            billingContext.SaveChanges();
         }
 
         public Order Get(int orderId)
         {
-            var orderEntity = _billingContext.Orders.First(item => item.Id == orderId);
+            var orderEntity = billingContext.Orders.First(item => item.Id == orderId);
 
             var customer = new Customer
             {
@@ -76,10 +71,10 @@ namespace Billing.WebApi.DAL
                 AdditionalInfo = orderEntity.Customer.AdditionalInfo
             };
 
-            var goods = orderEntity.OrderGoods.Select(item => new Goods {
+            var goods = orderEntity.OrderGoods.Select(item => new Good {
                 Id = item.Goods.Id,
                 Price = item.Goods.Price,
-                QuantityInOrder = item.Quantity,
+                Quantity = item.Quantity,
                 Description = item.Goods.Description
             }).ToList(); 
 
@@ -89,16 +84,10 @@ namespace Billing.WebApi.DAL
                 OrderDate = orderEntity.OrderDate,
                 Price = orderEntity.Price,
                 PaymentStatus = (PaymentStatus)orderEntity.PaymentStatus,
-                DeliverStatus = (DeliverStatus)orderEntity.DeliverStatus,
+                DeliverStatus = (DeliveryStatus)orderEntity.DeliverStatus,
                 Customer = customer,
                 Goods = goods
             };
-        }
-
-        // проговорить про компоненты
-        public List<Component> GetComponents()
-        {
-            throw new NotImplementedException();
         }
 
         // Уточнить, что нужно обновлять

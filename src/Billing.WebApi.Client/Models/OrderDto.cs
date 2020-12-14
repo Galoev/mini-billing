@@ -12,6 +12,6 @@ namespace Billing.WebApi.Client.Models
 
         public decimal Price { get; set; }
         public PaymentStatus PaymentStatus { get; set; }
-        public DeliverStatus DeliverStatus { get; set; }
+        public DeliveryStatus DeliveryStatus { get; set; }
     }
 }
