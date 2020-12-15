@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-#nullable disable
-
 namespace Billing.WebApi.Repositories.Models
 {
     public partial class BillingContext : DbContext
@@ -16,11 +14,13 @@ namespace Billing.WebApi.Repositories.Models
         }
 
         public virtual DbSet<ComponentDbo> Components { get; set; }
+        public virtual DbSet<UnitComponentPriceLinkDbo> UnitComponentPrices { get; set; }
         public virtual DbSet<CustomerDbo> Customers { get; set; }
-        public virtual DbSet<GoodsDbo> Goods { get; set; }
-        public virtual DbSet<GoodsComponentLinkDbo> GoodsComponents { get; set; }
+        public virtual DbSet<GoodDbo> Goods { get; set; }
+        public virtual DbSet<UnitGoodPriceLinkDbo> UnitGoodPrices { get; set; }
+        public virtual DbSet<GoodComponentLinkDbo> GoodComponents { get; set; }
         public virtual DbSet<OrderDbo> Orders { get; set; }
-        public virtual DbSet<OrderGoodsLinkDbo> OrderGoods { get; set; }
+        public virtual DbSet<OrderGoodLinkDbo> OrderGoods { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -35,10 +35,12 @@ namespace Billing.WebApi.Repositories.Models
         {
             OnModelCreatingCustomer(modelBuilder);
             OnModelCreatingComponent(modelBuilder);
-            OnModelCreatingGoods(modelBuilder);
+            OnModelCreatingGood(modelBuilder);
             OnModelCreatingOrder(modelBuilder);
-            OnModelCreatingGoodsComponent(modelBuilder);
-            OnModelCreatingOrderGoods(modelBuilder);
+            OnModelCreatingGoodComponent(modelBuilder);
+            OnModelCreatingOrderGood(modelBuilder);
+            OnModelCreatingUnitGoodPrice(modelBuilder);
+            OnModelCreatingUnitComponentPrice(modelBuilder);
 
             OnModelCreatingPartial(modelBuilder);
         }
@@ -96,19 +98,15 @@ namespace Billing.WebApi.Repositories.Models
             });
         }
 
-        private void OnModelCreatingGoods(ModelBuilder modelBuilder)
+        private void OnModelCreatingGood(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<GoodsDbo>(entity =>
+            modelBuilder.Entity<GoodDbo>(entity =>
             {
-                entity.ToTable("Goods");
+                entity.ToTable("Good");
 
                 entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Description).HasColumnName("description");
-
-                entity.Property(e => e.Price).HasColumnName("price");
-
-                entity.Property(e => e.QuantityUnit).HasColumnName("quantity_unit");
             });
         }
 
@@ -120,69 +118,115 @@ namespace Billing.WebApi.Repositories.Models
 
                 entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
 
-                entity.Property(e => e.Description).HasColumnName("description");
-
-                entity.Property(e => e.Price).HasColumnName("price");
-
-                entity.Property(e => e.QuantityUnit).HasColumnName("quantity_unit");
+                entity.Property(e => e.Description).HasColumnName("description");        
             });
         }
 
-        private void OnModelCreatingOrderGoods(ModelBuilder modelBuilder)
+        private void OnModelCreatingOrderGood(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<OrderGoodsLinkDbo>(entity => 
+            modelBuilder.Entity<OrderGoodLinkDbo>(entity => 
             { 
-                entity.ToTable("OrderGoods");
+                entity.ToTable("OrderGood");
 
-                entity.HasKey(e => new { e.OrderId, e.GoodsId })
-                    .HasName("OrderGoods_pkey");
+                entity.HasKey(e => new { e.OrderId, e.GoodId })
+                    .HasName("OrderGood_pkey");
 
                 entity.Property(e => e.OrderId).HasColumnName("order_id");
 
-                entity.Property(e => e.GoodsId).HasColumnName("goods_id");
+                entity.Property(e => e.GoodId).HasColumnName("good_id");
 
                 entity.Property(e => e.Quantity).HasColumnName("quantity");
 
-                entity.HasOne(d => d.Goods)
-                    .WithMany(p => p.OrderGoods)
-                    .HasForeignKey(d => d.GoodsId)
+                entity.Property(e => e.QuantityUnit).HasColumnName("quantity_unit");
+
+                entity.HasOne(d => d.Good)
+                    .WithMany(p => p.GoodOrders)
+                    .HasForeignKey(d => d.GoodId)
                     .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("OrderGoods_goods_id_fkey");
+                    .HasConstraintName("OrderGood_good_id_fkey");
 
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.OrderGoods)
                     .HasForeignKey(d => d.OrderId)
                     .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("OrderGoods_order_id_fkey");
+                    .HasConstraintName("OrderGood_order_id_fkey");
             });
         }
 
-        private void OnModelCreatingGoodsComponent(ModelBuilder modelBuilder)
+        private void OnModelCreatingGoodComponent(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<GoodsComponentLinkDbo>(entity =>
+            modelBuilder.Entity<GoodComponentLinkDbo>(entity =>
             {
-                entity.HasKey(e => new { e.GoodsId, e.ComponentId })
-                    .HasName("GoodsComponent_pkey");
+                entity.HasKey(e => new { e.GoodId, e.ComponentId })
+                    .HasName("GoodComponent_pkey");
 
-                entity.ToTable("GoodsComponent");
+                entity.ToTable("GoodComponent");
 
-                entity.Property(e => e.GoodsId).HasColumnName("goods_id");
+                entity.Property(e => e.GoodId).HasColumnName("good_id");
 
                 entity.Property(e => e.ComponentId).HasColumnName("component_id");
 
                 entity.Property(e => e.Quantity).HasColumnName("quantity");
 
+                entity.Property(e => e.QuantityUnit).HasColumnName("quantity_unit");
+
                 entity.HasOne(d => d.Component)
-                    .WithMany(p => p.GoodsComponents)
+                    .WithMany(p => p.ComponentGoods)
                     .HasForeignKey(d => d.ComponentId)
                     .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("GoodsComponent_component_id_fkey");
+                    .HasConstraintName("GoodComponent_component_id_fkey");
 
-                entity.HasOne(d => d.Goods)
-                    .WithMany(p => p.GoodsComponents)
-                    .HasForeignKey(d => d.GoodsId)
+                entity.HasOne(d => d.Good)
+                    .WithMany(p => p.GoodComponents)
+                    .HasForeignKey(d => d.GoodId)
                     .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("GoodsComponent_goods_id_fkey");
+                    .HasConstraintName("GoodComponents_goods_id_fkey");
+            });
+        }
+
+        private void OnModelCreatingUnitGoodPrice(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<UnitGoodPriceLinkDbo>(entity =>
+            {
+                entity.ToTable("UnitGoodPrice");
+
+                entity.HasKey(e => new { e.GoodId, e.QuantityUnit })
+                    .HasName("UnitGoodPrice_pkey");
+
+                entity.Property(e => e.GoodId).HasColumnName("good_id");
+
+                entity.Property(e => e.QuantityUnit).HasColumnName("quantity_unit");
+
+                entity.Property(e => e.UnitPrice).HasColumnName("unit_price");
+
+                entity.HasOne(d => d.Good)
+                    .WithMany(p => p.UnitGoodPrices)
+                    .HasForeignKey(d => d.GoodId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("UnitGoodPrice_good_id_fkey");
+            });
+        }
+
+        private void OnModelCreatingUnitComponentPrice(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<UnitComponentPriceLinkDbo>(entity =>
+            {
+                entity.ToTable("UnitComponentPrice");
+
+                entity.HasKey(e => new { e.ComponentId, e.QuantityUnit })
+                    .HasName("UnitComponentPrice_pkey");
+
+                entity.Property(e => e.ComponentId).HasColumnName("component_id");
+
+                entity.Property(e => e.QuantityUnit).HasColumnName("quantity_unit");
+
+                entity.Property(e => e.UnitPrice).HasColumnName("unit_price");
+
+                entity.HasOne(d => d.Component)
+                    .WithMany(p => p.UnitComponentPrices)
+                    .HasForeignKey(d => d.ComponentId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("UnitComponentPrice_component_id_fkey");
             });
         }
     }

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-#nullable disable
-
 namespace Billing.WebApi.Repositories.Models
 {
     public partial class CustomerDbo

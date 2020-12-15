@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Billing.WebApi.Client.Models;
 
 namespace Billing.WebApi.Models
 {

@@ -9,7 +9,7 @@ namespace Billing.WebApi.Repositories.Models
     {
         public OrderDbo()
         {
-            OrderGoods = new HashSet<OrderGoodsLinkDbo>();
+            OrderGoods = new HashSet<OrderGoodLinkDbo>();
         }
 
         public Guid Id { get; set; }
@@ -20,6 +20,6 @@ namespace Billing.WebApi.Repositories.Models
         public DeliveryStatus DeliverStatus { get; set; }
 
         public virtual CustomerDbo Customer { get; set; }
-        public virtual ICollection<OrderGoodsLinkDbo> OrderGoods { get; set; }
+        public virtual ICollection<OrderGoodLinkDbo> OrderGoods { get; set; }
     }
 }

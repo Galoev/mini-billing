@@ -1,6 +1,4 @@
 ﻿using Billing.WebApi.Client.Models;
-using Billing.WebApi.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 

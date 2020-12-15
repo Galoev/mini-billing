@@ -7,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Billing.WebApi.Repositories;
 using Billing.WebApi.Repositories.Models;
+using Billing.WebApi.Models.Converter;
 
 namespace Billing.WebApi
 {
@@ -25,6 +26,7 @@ namespace Billing.WebApi
             services.AddDbContext<BillingContext>(opt =>
                                    opt.UseNpgsql(Configuration.GetConnectionString("BillingContext")));
             services.AddScoped<IOrdersRepository, OrdersRepository>();
+            services.AddScoped<IOrderConverter,OrderConverter>();
             services.AddControllers();
         }
 

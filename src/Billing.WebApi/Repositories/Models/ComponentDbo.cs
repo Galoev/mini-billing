@@ -1,8 +1,5 @@
-﻿using Billing.WebApi.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System;
-
-#nullable disable
 
 namespace Billing.WebApi.Repositories.Models
 {
@@ -10,13 +7,14 @@ namespace Billing.WebApi.Repositories.Models
     {
         public ComponentDbo()
         {
-            GoodsComponents = new HashSet<GoodsComponentLinkDbo>();
+            ComponentGoods = new HashSet<GoodComponentLinkDbo>();
+            UnitComponentPrices = new HashSet<UnitComponentPriceLinkDbo>();
         }
 
         public Guid Id { get; set; }
-        public decimal Price { get; set; }
         public string Description { get; set; }
 
-        public virtual ICollection<GoodsComponentLinkDbo> GoodsComponents { get; set; }
+        public virtual ICollection<GoodComponentLinkDbo> ComponentGoods { get; set; }
+        public virtual ICollection<UnitComponentPriceLinkDbo> UnitComponentPrices { get; set; }
     }
 }

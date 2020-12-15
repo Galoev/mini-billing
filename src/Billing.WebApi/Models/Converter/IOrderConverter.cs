@@ -1,6 +1,6 @@
 ﻿using Billing.WebApi.Client.Models;
 
-namespace Billing.WebApi.Models
+namespace Billing.WebApi.Models.Converter
 {
     public interface IOrderConverter
     {

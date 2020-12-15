@@ -19,7 +19,7 @@ namespace Billing.WebApi.Repositories
             var customer = billingContext.Customers.First(c => c.Id == orderToCreate.Customer.Id);
 
             var price = orderToCreate.Goods.Aggregate(0.0M, 
-                (sumPrice, nextGoods) => sumPrice + nextGoods.Quantity * nextGoods.Price); ;
+                (sumPrice, nextGoods) => sumPrice + nextGoods.Quantity * nextGoods.UnitPrice); ;
 
             var order = new OrderDbo()
             {
@@ -32,10 +32,10 @@ namespace Billing.WebApi.Repositories
             };
 
             var goods = billingContext.Goods.Where(item => orderToCreate.Goods.Any(g => g.Id == item.Id));
-            var rangeToAdd = goods.Select(item => new OrderGoodsLinkDbo
+            var rangeToAdd = goods.Select(item => new OrderGoodLinkDbo
             {
                 Order = order,
-                Goods = item,
+                Good = item,
                 Quantity = orderToCreate.Goods.First(g => g.Id == item.Id).Quantity
             });
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Billing.WebApi.Repositories;
 using Billing.WebApi.Models;
 using Billing.WebApi.Client.Models;
+using Billing.WebApi.Models.Converter;
 
 namespace Billing.WebApi.Controllers
 {
@@ -24,21 +25,21 @@ namespace Billing.WebApi.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<OrderDto>> Get()
         {
-            return ordersRepository.Get().ConvertAll(new Converter<Order, OrderDto>(OrderToDto));
+            throw new NotImplementedException();
         }
 
         // GET api/<BillingController>/5
         [HttpGet("{id}")]
         public ActionResult<OrderDto> Get(int id)
         {
-            return OrderToDto(ordersRepository.Get(id));
+            return orderConverter.ToDto(ordersRepository.Get(id));
         }
 
         // POST api/<BillingController>
         [HttpPost]
         public ActionResult<OrderDto> Post([FromBody] OrderDto orderDto)
         {
-            var orderToPost = DtoToOrder(orderDto);
+            var orderToPost = orderConverter.FromDto(orderDto);
             ordersRepository.Create(orderToPost);
             return CreatedAtAction(nameof(Get), new { id = orderToPost.Id }, orderToPost);
         }
@@ -47,7 +48,7 @@ namespace Billing.WebApi.Controllers
         [HttpPut]
         public void Put([FromBody] OrderDto orderDto)
         {
-            ordersRepository.Update(DtoToOrder(orderDto));
+            ordersRepository.Update(orderConverter.FromDto(orderDto));
         }
 
         // DELETE api/<BillingController>/5
