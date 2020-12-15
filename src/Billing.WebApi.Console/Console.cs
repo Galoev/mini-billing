@@ -11,16 +11,6 @@ namespace Billing.WebApi.Console
         {
         }
 
-        public void AddMenu(Menu menu)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void PrintMenu()
-        {
-            throw new NotImplementedException();
-        }
-
         public void PrintTable<T>(IEnumerable<T> values)
         {
             Table table = new Table();

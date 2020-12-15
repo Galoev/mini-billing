@@ -26,10 +26,15 @@ namespace Billing.WebApi.Console
             return Add(new Option(option, callback));
         }
 
-        private Menu Add(Option option)
+        public Menu Add(Option option)
         {
             options.Add(option);
             return this;
+        }
+
+        public void ExecuteOption(int i)
+        {
+            options[i].callback();
         }
     }
 }
