@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using BetterConsoleTables;
 
 namespace Billing.WebApi.Console
 {
@@ -21,7 +23,24 @@ namespace Billing.WebApi.Console
 
         public void PrintTable<T>(IEnumerable<T> values)
         {
-            throw new NotImplementedException();
+            Table table = new Table();
+            var columns = GetColumns<T>();
+            var columnsWithIdx = columns.ToList();
+            columnsWithIdx.Insert(0, "№");
+            table.AddColumns(Alignment.Left, Alignment.Left, columnsWithIdx.ToArray());
+            int index = 0;
+            foreach (
+                var propertyValues
+                in values.Select(value => columns.Select(column => GetColumnValue<T>(value, column)))
+            )
+            {
+                index++;
+                var row = propertyValues.ToList();
+                row.Insert(0, index);
+                table.AddRow(row.ToArray());
+            }
+
+            System.Console.Write(table.ToString());
         }
 
         public DateTime ReadDate()
@@ -73,6 +92,16 @@ namespace Billing.WebApi.Console
             }
 
             return value;
+        }
+
+        private static IEnumerable<string> GetColumns<T>()
+        {
+            return typeof(T).GetProperties().Select(x => x.Name).ToArray();
+        }
+
+        private static object GetColumnValue<T>(object target, string column)
+        {
+            return typeof(T).GetProperty(column).GetValue(target, null);
         }
     }
 }
