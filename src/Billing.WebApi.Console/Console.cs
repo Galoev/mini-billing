@@ -26,7 +26,20 @@ namespace Billing.WebApi.Console
 
         public DateTime ReadDate()
         {
-            throw new NotImplementedException();
+            string dateFormat = "dd.MM.yyyy";
+            string input = System.Console.ReadLine();
+            DateTime date;
+
+            while (!DateTime.TryParseExact(input, dateFormat,
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    System.Globalization.DateTimeStyles.AllowWhiteSpaces,
+                    out date))
+            {
+                System.Console.WriteLine($"Please enter the order date in this format {dateFormat}");
+                input = System.Console.ReadLine();
+            }
+
+            return date;
         }
 
         public int ReadInt(string hint, int min, int max)
