@@ -36,5 +36,10 @@ namespace Billing.WebApi.Console
         {
             options[i].callback();
         }
+
+        public int OptionsCount()
+        {
+            return options.Count;
+        }
     }
 }
