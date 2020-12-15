@@ -4,7 +4,7 @@ namespace Billing.WebApi.Models.Converter
 {
     public interface IOrderConverter
     {
-        public OrderDto ToDto(Order order);
-        public Order FromDto(OrderDto orderDto);
+        public GetOrderDto ToGetDto(Order order);
+        public Order FromCreateDto(CreateOrderDto orderDto);
     }
 }
