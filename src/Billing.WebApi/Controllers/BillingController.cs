@@ -30,9 +30,10 @@ namespace Billing.WebApi.Controllers
 
         // GET api/<BillingController>/5
         [HttpGet("{id}")]
-        public ActionResult<GetOrderDto> Get(int id)
+        public ActionResult<GetOrderDto> Get(Guid id)
         {
-            return orderConverter.ToGetDto(ordersRepository.Get(id));
+            var result = ordersRepository.Get(id);
+            return result.IsSuccess ? orderConverter.ToGetDto(result.Value) : new GetOrderDto { };
         }
 
         // POST api/<BillingController>
@@ -53,7 +54,7 @@ namespace Billing.WebApi.Controllers
 
         // DELETE api/<BillingController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public void Delete(Guid id)
         {
             ordersRepository.Delete(id);
         }

@@ -24,7 +24,7 @@ namespace Billing.WebApi.Models.Converter
                 {
                     Id = item.Id,
                     Quantity = item.Quantity,
-                    QuantityType = (QuantityType)item.QuantityUnit
+                    QuantityUnit = (QuantityType)item.QuantityUnit
                 })
             };   
         }
@@ -49,7 +49,7 @@ namespace Billing.WebApi.Models.Converter
                     Id = item.Id,
                     Quantity = item.Quantity,
                     UnitPrice = item.UnitPrice,
-                    QuantityUnit = Convert.ToInt32(item.QuantityType)
+                    QuantityUnit = Convert.ToInt32(item.QuantityUnit)
                 })
             };
         }

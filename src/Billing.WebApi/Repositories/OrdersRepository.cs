@@ -16,7 +16,16 @@ namespace Billing.WebApi.Repositories
         }
         public decimal Create(Order orderToCreate)
         {
-            var customer = billingContext.Customers.First(c => c.Id == orderToCreate.Customer.Id);
+            var customer = billingContext.Customers.FirstOrDefault(c => c.Id == orderToCreate.Customer.Id);
+            customer = customer ??= new CustomerDbo
+            {
+                Name = orderToCreate.Customer.Name,
+                Phone = orderToCreate.Customer.Phone,
+                AdditionalInfo = orderToCreate.Customer.AdditionalInfo
+            };
+
+            orderToCreate.Goods.Select(item =>
+                item.UnitPrice = GetPriceForGood(item.Id, item.QuantityUnit));
 
             var price = orderToCreate.Goods.Aggregate(0.0M, 
                 (sumPrice, nextGoods) => sumPrice + nextGoods.Quantity * nextGoods.UnitPrice); ;
@@ -36,13 +45,21 @@ namespace Billing.WebApi.Repositories
             {
                 Order = order,
                 Good = item,
-                Quantity = orderToCreate.Goods.First(g => g.Id == item.Id).Quantity
+                Quantity = orderToCreate.Goods.FirstOrDefault(g => g.Id == item.Id).Quantity,
+                QuantityUnit = orderToCreate.Goods.First(g => g.Id == item.Id).QuantityUnit
             });
 
             billingContext.OrderGoods.AddRange(rangeToAdd);
             billingContext.SaveChanges();
 
             return price;
+        }
+
+        private decimal GetPriceForGood(Guid id, QuantityType qtype)
+        {
+            var priceRecord = billingContext.UnitGoodPrices.FirstOrDefault(p =>
+                    p.GoodId == id && p.QuantityUnit == qtype);
+            return priceRecord == null ? 0.0M : priceRecord.UnitPrice;
         }
 
         public void Delete(Order orderToDelete)
@@ -52,42 +69,62 @@ namespace Billing.WebApi.Repositories
             billingContext.SaveChanges();
         }
 
-        public void Delete(int id)
+        public void Delete(Guid id)
         {
             var order = billingContext.Orders.Find(id);
             billingContext.Orders.Remove(order);
             billingContext.SaveChanges();
         }
 
-        public Order Get(int orderId)
+        public OrderRepositoryResult Get(Guid orderId)
         {
-            var orderEntity = billingContext.Orders.First(item => item.Id == orderId);
-
-            var customer = new Customer
+            var orderEntity = billingContext.Orders.FirstOrDefault(item => item.Id == orderId);
+            OrderRepositoryResult result;
+            if (orderEntity == null)
             {
-                Id = orderEntity.Customer.Id,
-                Name = orderEntity.Customer.Name,
-                Phone = orderEntity.Customer.Phone,
-                AdditionalInfo = orderEntity.Customer.AdditionalInfo
-            };
-
-            var goods = orderEntity.OrderGoods.Select(item => new Good {
-                Id = item.Goods.Id,
-                Price = item.Goods.Price,
-                Quantity = item.Quantity,
-                Description = item.Goods.Description
-            }).ToList(); 
-
-            return new Order
+                result = new OrderRepositoryResult
+                {
+                    IsSuccess = false,
+                    Message = $"Could not find order with id : {orderId}"
+                };
+            }
+            else
             {
-                Id = orderEntity.Id,
-                OrderDate = orderEntity.OrderDate,
-                Price = orderEntity.Price,
-                PaymentStatus = orderEntity.PaymentStatus,
-                DeliveryStatus = orderEntity.DeliverStatus,
-                Customer = customer,
-                Goods = goods
-            };
+                var customer = new Customer
+                {
+                    Id = orderEntity.Customer.Id,
+                    Name = orderEntity.Customer.Name,
+                    Phone = orderEntity.Customer.Phone,
+                    AdditionalInfo = orderEntity.Customer.AdditionalInfo
+                };
+
+                var goods = orderEntity.OrderGoods.Select(item => new OrderGood
+                {
+                    Id = item.GoodId,
+                    UnitPrice = GetPriceForGood(item.GoodId, item.QuantityUnit),
+                    Quantity = item.Quantity,
+                    QuantityUnit = item.QuantityUnit
+                }).ToList();
+
+                var order = new Order
+                {
+                    Id = orderEntity.Id,
+                    OrderDate = orderEntity.OrderDate,
+                    Price = orderEntity.Price,
+                    PaymentStatus = orderEntity.PaymentStatus,
+                    DeliveryStatus = orderEntity.DeliverStatus,
+                    Customer = customer,
+                    Goods = goods
+                };
+
+                result = new OrderRepositoryResult
+                {
+                    IsSuccess = true,
+                    Message = "Success",
+                    Value = order
+                };
+            }
+            return result;
         }
 
         // Уточнить, что нужно обновлять

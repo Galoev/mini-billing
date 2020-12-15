@@ -1,4 +1,5 @@
 ﻿using Billing.WebApi.Models;
+using System;
 
 namespace Billing.WebApi.Repositories
 {
@@ -6,12 +7,12 @@ namespace Billing.WebApi.Repositories
     {
         decimal Create(Order orderToCreate);
 
-        Order Get(int orderId);
+        OrderRepositoryResult Get(Guid orderId);
 
         void Update(Order orderToUpdate);
 
         void Delete(Order orderToDelete);
 
-        void Delete(int id);
+        void Delete(Guid id);
     }
 }
