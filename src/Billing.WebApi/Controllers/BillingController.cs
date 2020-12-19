@@ -2,8 +2,8 @@
 using System;
 using System.Collections.Generic;
 using Billing.WebApi.Repositories;
-using Billing.WebApi.Models;
 using Billing.WebApi.Client.Models;
+using Billing.WebApi.Utility;
 using Billing.WebApi.Models.Converter;
 
 namespace Billing.WebApi.Controllers
@@ -30,33 +30,65 @@ namespace Billing.WebApi.Controllers
 
         // GET api/<BillingController>/5
         [HttpGet("{id}")]
-        public ActionResult<GetOrderDto> Get(Guid id)
+        public ActionResult<Result<GetOrderDto>> Get(Guid id)
         {
-            var result = ordersRepository.Get(id);
-            return result.IsSuccess ? orderConverter.ToGetDto(result.Value) : new GetOrderDto { };
+            var resultFromRepository = ordersRepository.Get(id);
+            return new Result<GetOrderDto>
+            {
+                IsSuccess = resultFromRepository.IsSuccess,
+                Message = resultFromRepository.Message,
+                Value = resultFromRepository.Value != null ? orderConverter.ToGetDto(resultFromRepository.Value) : null
+            };
         }
 
         // POST api/<BillingController>
         [HttpPost]
-        public ActionResult<CreateOrderDto> Post([FromBody] CreateOrderDto orderDto)
+        public ActionResult<Result<GetOrderDto>> Post([FromBody] CreateOrderDto orderDto)
         {
             var orderToPost = orderConverter.FromCreateDto(orderDto);
-            ordersRepository.Create(orderToPost);
-            return CreatedAtAction(nameof(Get), new { id = orderToPost.Id }, orderToPost);
+            // TODO: добавить получение цены из компонента подсчета цены заказа
+            orderToPost.Price = 0.0M;
+
+            var resultFromRepository = ordersRepository.Create(orderToPost);
+
+            return CreatedAtAction(nameof(Get), new { id = orderToPost.Id }, new Result<GetOrderDto>
+            {
+                IsSuccess = resultFromRepository.IsSuccess,
+                Message = resultFromRepository.Message,
+                Value = resultFromRepository.Value != null 
+                    ? orderConverter.ToGetDto(resultFromRepository.Value) 
+                    : null
+            });
         }
 
         // PUT api/<BillingController>
         [HttpPut]
-        public void Put([FromBody] CreateOrderDto orderDto)
+        public ActionResult<Result<GetOrderDto>> Put([FromBody] CreateOrderDto orderDto)
         {
-            ordersRepository.Update(orderConverter.FromCreateDto(orderDto));
+            var resultFromRepository = ordersRepository.Update(orderConverter.FromCreateDto(orderDto));
+            return new Result<GetOrderDto>
+            {
+                IsSuccess = resultFromRepository.IsSuccess,
+                Message = resultFromRepository.Message,
+                Value = resultFromRepository.Value != null 
+                    ? orderConverter.ToGetDto(resultFromRepository.Value) 
+                    : null
+            };
         }
 
         // DELETE api/<BillingController>/5
         [HttpDelete("{id}")]
-        public void Delete(Guid id)
+        public ActionResult<Result<GetOrderDto>> Delete(Guid id)
         {
-            ordersRepository.Delete(id);
+            var resultFromRepository = ordersRepository.Delete(id);
+            return new Result<GetOrderDto>
+            {
+                IsSuccess = resultFromRepository.IsSuccess,
+                Message = resultFromRepository.Message,
+                Value = resultFromRepository.Value != null 
+                    ? orderConverter.ToGetDto(resultFromRepository.Value) 
+                    : null
+            };
         }
     }
 }

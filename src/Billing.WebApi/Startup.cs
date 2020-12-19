@@ -26,7 +26,7 @@ namespace Billing.WebApi
             services.AddDbContext<BillingContext>(opt =>
                                    opt.UseNpgsql(Configuration.GetConnectionString("BillingContext")));
             services.AddScoped<IOrdersRepository, OrdersRepository>();
-            services.AddScoped<IOrderConverter,OrderConverter>();
+            services.AddScoped<IOrderConverter, OrderConverter>();
             services.AddControllers();
         }
 
