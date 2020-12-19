@@ -14,10 +14,8 @@ namespace Billing.WebApi.Repositories.Models
         }
 
         public virtual DbSet<ComponentDbo> Components { get; set; }
-        public virtual DbSet<UnitComponentPriceLinkDbo> UnitComponentPrices { get; set; }
         public virtual DbSet<CustomerDbo> Customers { get; set; }
         public virtual DbSet<GoodDbo> Goods { get; set; }
-        public virtual DbSet<UnitGoodPriceLinkDbo> UnitGoodPrices { get; set; }
         public virtual DbSet<GoodComponentLinkDbo> GoodComponents { get; set; }
         public virtual DbSet<OrderDbo> Orders { get; set; }
         public virtual DbSet<OrderGoodLinkDbo> OrderGoods { get; set; }
@@ -39,8 +37,6 @@ namespace Billing.WebApi.Repositories.Models
             OnModelCreatingOrder(modelBuilder);
             OnModelCreatingGoodComponent(modelBuilder);
             OnModelCreatingOrderGood(modelBuilder);
-            OnModelCreatingUnitGoodPrice(modelBuilder);
-            OnModelCreatingUnitComponentPrice(modelBuilder);
 
             OnModelCreatingPartial(modelBuilder);
         }
@@ -80,18 +76,18 @@ namespace Billing.WebApi.Repositories.Models
 
                 entity.Property(e => e.CustomerId).HasColumnName("customer_id");
 
-                entity.Property(e => e.DeliverStatus).HasColumnName("deliver_status");
+                entity.Property(e => e.DeliveryStatus).HasColumnName("delivery_status");
 
-                entity.Property(e => e.OrderDate)
+                entity.Property(e => e.CreationDate)
                     .HasColumnType("timestamp(0) without time zone")
-                    .HasColumnName("order_date");
+                    .HasColumnName("creation_date");
 
                 entity.Property(e => e.PaymentStatus).HasColumnName("payment_status");
 
                 entity.Property(e => e.Price).HasColumnName("price");
 
-                entity.HasOne(d => d.Customer)
-                    .WithMany(p => p.Orders)
+                entity.HasOne<CustomerDbo>()
+                    .WithMany()
                     .HasForeignKey(d => d.CustomerId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("Order_customer_id_fkey");
@@ -106,6 +102,10 @@ namespace Billing.WebApi.Repositories.Models
 
                 entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
 
+                entity.Property(e => e.QuantityType).HasColumnName("quantity_type");
+
+                entity.Property(e => e.UnitPrice).HasColumnName("unit_price");
+
                 entity.Property(e => e.Description).HasColumnName("description");
             });
         }
@@ -117,6 +117,10 @@ namespace Billing.WebApi.Repositories.Models
                 entity.ToTable("Component");
 
                 entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
+
+                entity.Property(e => e.QuantityType).HasColumnName("quantity_type");
+
+                entity.Property(e => e.UnitPrice).HasColumnName("unit_price");
 
                 entity.Property(e => e.Description).HasColumnName("description");        
             });
@@ -137,16 +141,14 @@ namespace Billing.WebApi.Repositories.Models
 
                 entity.Property(e => e.Quantity).HasColumnName("quantity");
 
-                entity.Property(e => e.QuantityUnit).HasColumnName("quantity_unit");
-
-                entity.HasOne(d => d.Good)
-                    .WithMany(p => p.GoodOrders)
+                entity.HasOne<GoodDbo>()
+                    .WithMany()
                     .HasForeignKey(d => d.GoodId)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("OrderGood_good_id_fkey");
 
-                entity.HasOne(d => d.Order)
-                    .WithMany(p => p.OrderGoods)
+                entity.HasOne<OrderDbo>()
+                    .WithMany()
                     .HasForeignKey(d => d.OrderId)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("OrderGood_order_id_fkey");
@@ -168,65 +170,17 @@ namespace Billing.WebApi.Repositories.Models
 
                 entity.Property(e => e.Quantity).HasColumnName("quantity");
 
-                entity.Property(e => e.QuantityUnit).HasColumnName("quantity_unit");
-
-                entity.HasOne(d => d.Component)
-                    .WithMany(p => p.ComponentGoods)
+                entity.HasOne<ComponentDbo>()
+                    .WithMany()
                     .HasForeignKey(d => d.ComponentId)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("GoodComponent_component_id_fkey");
 
-                entity.HasOne(d => d.Good)
-                    .WithMany(p => p.GoodComponents)
+                entity.HasOne<GoodDbo>()
+                    .WithMany()
                     .HasForeignKey(d => d.GoodId)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("GoodComponents_goods_id_fkey");
-            });
-        }
-
-        private void OnModelCreatingUnitGoodPrice(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<UnitGoodPriceLinkDbo>(entity =>
-            {
-                entity.ToTable("UnitGoodPrice");
-
-                entity.HasKey(e => new { e.GoodId, e.QuantityUnit })
-                    .HasName("UnitGoodPrice_pkey");
-
-                entity.Property(e => e.GoodId).HasColumnName("good_id");
-
-                entity.Property(e => e.QuantityUnit).HasColumnName("quantity_unit");
-
-                entity.Property(e => e.UnitPrice).HasColumnName("unit_price");
-
-                entity.HasOne(d => d.Good)
-                    .WithMany(p => p.UnitGoodPrices)
-                    .HasForeignKey(d => d.GoodId)
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("UnitGoodPrice_good_id_fkey");
-            });
-        }
-
-        private void OnModelCreatingUnitComponentPrice(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<UnitComponentPriceLinkDbo>(entity =>
-            {
-                entity.ToTable("UnitComponentPrice");
-
-                entity.HasKey(e => new { e.ComponentId, e.QuantityUnit })
-                    .HasName("UnitComponentPrice_pkey");
-
-                entity.Property(e => e.ComponentId).HasColumnName("component_id");
-
-                entity.Property(e => e.QuantityUnit).HasColumnName("quantity_unit");
-
-                entity.Property(e => e.UnitPrice).HasColumnName("unit_price");
-
-                entity.HasOne(d => d.Component)
-                    .WithMany(p => p.UnitComponentPrices)
-                    .HasForeignKey(d => d.ComponentId)
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("UnitComponentPrice_component_id_fkey");
             });
         }
     }

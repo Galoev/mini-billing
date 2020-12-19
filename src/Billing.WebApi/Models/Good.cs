@@ -8,6 +8,6 @@ namespace Billing.WebApi.Models
         public Guid Id { get; set; }
         public string Description { get; set; }
 
-        public ICollection<GoodComponent> Components { get; set; }
+        public List<GoodComponent> Components { get; set; }
     }
 }

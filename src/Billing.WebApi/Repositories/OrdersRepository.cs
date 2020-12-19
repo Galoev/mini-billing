@@ -24,42 +24,24 @@ namespace Billing.WebApi.Repositories
                 AdditionalInfo = orderToCreate.Customer.AdditionalInfo
             };
 
-            orderToCreate.Goods.Select(item =>
-                item.UnitPrice = GetPriceForGood(item.Id, item.QuantityUnit));
-
-            var price = orderToCreate.Goods.Aggregate(0.0M, 
-                (sumPrice, nextGoods) => sumPrice + nextGoods.Quantity * nextGoods.UnitPrice); ;
-
             var order = new OrderDbo()
             {
                 CustomerId = orderToCreate.Customer.Id,
-                OrderDate = orderToCreate.OrderDate,
-                Price = price,
+                CreationDate = orderToCreate.CreationDate,
                 PaymentStatus = orderToCreate.PaymentStatus,
-                DeliverStatus = orderToCreate.DeliveryStatus,
-                Customer = customer
+                DeliveryStatus = orderToCreate.DeliveryStatus
             };
 
             var goods = billingContext.Goods.Where(item => orderToCreate.Goods.Any(g => g.Id == item.Id));
             var rangeToAdd = goods.Select(item => new OrderGoodLinkDbo
             {
-                Order = order,
-                Good = item,
-                Quantity = orderToCreate.Goods.FirstOrDefault(g => g.Id == item.Id).Quantity,
-                QuantityUnit = orderToCreate.Goods.First(g => g.Id == item.Id).QuantityUnit
+                Quantity = orderToCreate.Goods.FirstOrDefault(g => g.Id == item.Id).Quantity
             });
 
             billingContext.OrderGoods.AddRange(rangeToAdd);
             billingContext.SaveChanges();
 
-            return price;
-        }
-
-        private decimal GetPriceForGood(Guid id, QuantityType qtype)
-        {
-            var priceRecord = billingContext.UnitGoodPrices.FirstOrDefault(p =>
-                    p.GoodId == id && p.QuantityUnit == qtype);
-            return priceRecord == null ? 0.0M : priceRecord.UnitPrice;
+            return 0;
         }
 
         public void Delete(Order orderToDelete)
@@ -90,31 +72,13 @@ namespace Billing.WebApi.Repositories
             }
             else
             {
-                var customer = new Customer
-                {
-                    Id = orderEntity.Customer.Id,
-                    Name = orderEntity.Customer.Name,
-                    Phone = orderEntity.Customer.Phone,
-                    AdditionalInfo = orderEntity.Customer.AdditionalInfo
-                };
-
-                var goods = orderEntity.OrderGoods.Select(item => new OrderGood
-                {
-                    Id = item.GoodId,
-                    UnitPrice = GetPriceForGood(item.GoodId, item.QuantityUnit),
-                    Quantity = item.Quantity,
-                    QuantityUnit = item.QuantityUnit
-                }).ToList();
-
                 var order = new Order
                 {
                     Id = orderEntity.Id,
-                    OrderDate = orderEntity.OrderDate,
+                    CreationDate = orderEntity.CreationDate,
                     Price = orderEntity.Price,
                     PaymentStatus = orderEntity.PaymentStatus,
-                    DeliveryStatus = orderEntity.DeliverStatus,
-                    Customer = customer,
-                    Goods = goods
+                    DeliveryStatus = orderEntity.DeliveryStatus
                 };
 
                 result = new OrderRepositoryResult

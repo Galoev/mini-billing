@@ -1,6 +1,4 @@
 ﻿using Billing.WebApi.Client.Models;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Billing.WebApi.Models.Converter
@@ -11,22 +9,35 @@ namespace Billing.WebApi.Models.Converter
         {
             return new Order
             {
-                OrderDate = orderDto.OrderDate,
-                PaymentStatus = (PaymentStatus)orderDto.PaymentStatus,
-                DeliveryStatus = (DeliveryStatus)orderDto.DeliveryStatus,
+                CreationDate = orderDto.CreationDate,
+                PaymentStatus = orderDto.PaymentStatus,
+                DeliveryStatus = orderDto.DeliveryStatus,
                 Customer = new Customer
                 {
-                    Name = orderDto.Customer.Name,
-                    Phone = orderDto.Customer.Phone,
-                    AdditionalInfo = orderDto.Customer.AdditionalInfo
+                    Id = orderDto.CustomerId
                 },
-                Goods = (ICollection<OrderGood>)orderDto.Goods.Select(item => new OrderGood
-                {
-                    Id = item.Id,
-                    Quantity = item.Quantity,
-                    QuantityUnit = (QuantityType)item.QuantityUnit
-                })
+                Goods = orderDto.Goods.Select(item => FromOrderGoodDto(item)).ToList()
             };   
+        }
+
+        private OrderGood FromOrderGoodDto(OrderGoodDto orderGoodDto)
+        {
+            return new OrderGood
+            {
+                Id = orderGoodDto.Id,
+                QuantityType = orderGoodDto.QuantityType,
+                Quantity = orderGoodDto.Quantity
+            };
+        }
+
+        private OrderGoodDto ToOrderGoodDto(OrderGood orderGood)
+        {
+            return new OrderGoodDto
+            {
+                Id = orderGood.Id,
+                QuantityType = orderGood.QuantityType,
+                Quantity = orderGood.Quantity
+            };
         }
 
         public GetOrderDto ToGetDto(Order order)
@@ -34,23 +45,18 @@ namespace Billing.WebApi.Models.Converter
             return new GetOrderDto
             {
                 Id = order.Id,
-                OrderDate = order.OrderDate,
+                CreationDate = order.CreationDate,
                 Price = order.Price,
-                PaymentStatus = Convert.ToInt32(order.PaymentStatus),
-                DeliveryStatus = Convert.ToInt32(order.DeliveryStatus),
+                PaymentStatus = order.PaymentStatus,
+                DeliveryStatus = order.DeliveryStatus,
                 Customer = new CustomerDto
                 {
+                    Id = order.Customer.Id,
                     Name = order.Customer.Name,
                     Phone = order.Customer.Phone,
                     AdditionalInfo = order.Customer.AdditionalInfo
                 },
-                Goods = (ICollection<OrderGoodDto>)order.Goods.Select(item => new OrderGoodDto
-                {
-                    Id = item.Id,
-                    Quantity = item.Quantity,
-                    UnitPrice = item.UnitPrice,
-                    QuantityUnit = Convert.ToInt32(item.QuantityUnit)
-                })
+                Goods = order.Goods.Select(item => ToOrderGoodDto(item)).ToList()
             };
         }
     }

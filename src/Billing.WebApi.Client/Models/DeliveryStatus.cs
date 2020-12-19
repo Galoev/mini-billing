@@ -1,4 +1,4 @@
-﻿namespace Billing.WebApi.Models
+﻿namespace Billing.WebApi.Client.Models
 {
     public enum DeliveryStatus
     {
