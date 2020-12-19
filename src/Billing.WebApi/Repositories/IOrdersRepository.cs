@@ -1,18 +1,18 @@
-﻿using Billing.WebApi.Models;
-using System;
+﻿using System;
+
+using Billing.WebApi.Models;
+using Billing.WebApi.Utility;
 
 namespace Billing.WebApi.Repositories
 {
     public interface IOrdersRepository
     {
-        decimal Create(Order orderToCreate);
+        Result<Order> Create(Order orderToCreate);
 
-        OrderRepositoryResult Get(Guid orderId);
+        Result<Order> Get(Guid orderId);
 
-        void Update(Order orderToUpdate);
+        Result<Order> Update(Order orderToUpdate);
 
-        void Delete(Order orderToDelete);
-
-        void Delete(Guid id);
+        Result<Order> Delete(Guid id);
     }
 }

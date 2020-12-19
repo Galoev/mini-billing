@@ -98,7 +98,7 @@ namespace Billing.WebApi.Repositories.Models
         {
             modelBuilder.Entity<GoodDbo>(entity =>
             {
-                entity.ToTable("Good");
+                entity.ToTable("Goods");
 
                 entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
 
