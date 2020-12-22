@@ -25,7 +25,6 @@ namespace Billing.WebApi.Models.Converter
             return new OrderGood
             {
                 Id = orderGoodDto.Id,
-                QuantityType = orderGoodDto.QuantityType,
                 Quantity = orderGoodDto.Quantity
             };
         }
@@ -35,7 +34,6 @@ namespace Billing.WebApi.Models.Converter
             return new OrderGoodDto
             {
                 Id = orderGood.Id,
-                QuantityType = orderGood.QuantityType,
                 Quantity = orderGood.Quantity
             };
         }

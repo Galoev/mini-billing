@@ -1,5 +1,4 @@
 ﻿using System;
-using Billing.WebApi.Client.Models;
 
 namespace Billing.WebApi.Models
 {
@@ -8,6 +7,5 @@ namespace Billing.WebApi.Models
         public Guid Id { get; set; }
         public decimal UnitPrice { get; set; }
         public int Quantity { get; set; }
-        public QuantityType QuantityType { get; set; }
     }
 }
