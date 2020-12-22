@@ -8,5 +8,7 @@ namespace Billing.WebApi.Repositories.Models
         public Guid OrderId { get; set; }
         public Guid GoodId { get; set; }
         public int Quantity { get; set; }
+
+        public virtual OrderDbo Order { get; set; }
     }
 }

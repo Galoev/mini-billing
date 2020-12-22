@@ -1,7 +1,7 @@
 ﻿using Billing.WebApi.Repositories.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 using Billing.WebApi.Models;
 using Billing.WebApi.Utility;
@@ -37,11 +37,24 @@ namespace Billing.WebApi.Repositories
                 DeliveryStatus = orderToCreate.DeliveryStatus
             };
 
+            var orderGoodLinks = orderToCreate.Goods.Select(good => new OrderGoodLinkDbo
+            {
+                OrderId = order.Id,
+                GoodId = good.Id,
+                Quantity = good.Quantity
+            }).ToList();
+
+            order.OrderGoods = orderGoodLinks;
             billingContext.Orders.Add(order);
             var createdRows = billingContext.SaveChanges();
 
             if (createdRows > 0)
             {
+                orderToCreate.Id = order.Id;
+                orderToCreate.Customer.Name = customer.Name;
+                orderToCreate.Customer.Phone = customer.Phone;
+                orderToCreate.Customer.AdditionalInfo = customer.AdditionalInfo;
+
                 return new Result<Order>
                 {
                     IsSuccess = true,
@@ -59,7 +72,7 @@ namespace Billing.WebApi.Repositories
 
         public Result<Order> Delete(Guid orderToDeleteId)
         {
-            var order = billingContext.Orders.FirstOrDefault(item => item.Id == orderToDeleteId);
+            var order = billingContext.Orders.Include(o => o.OrderGoods).FirstOrDefault(item => item.Id == orderToDeleteId);
             if (order == null)
             {
                 return new Result<Order> {
@@ -92,7 +105,11 @@ namespace Billing.WebApi.Repositories
                 Price = order.Price,
                 PaymentStatus = order.PaymentStatus,
                 DeliveryStatus = order.DeliveryStatus,
-                Goods = GetOrderGoods(order.Id)
+                Goods = order.OrderGoods.Select(item => new OrderGood 
+                { 
+                    Id = item.GoodId,
+                    Quantity = item.Quantity
+                }).ToList()
             };
 
             billingContext.Orders.Remove(order);
@@ -116,7 +133,7 @@ namespace Billing.WebApi.Repositories
 
         public Result<Order> Get(Guid orderId)
         {
-            var orderDbo = billingContext.Orders.FirstOrDefault(item => item.Id == orderId);
+            var orderDbo = billingContext.Orders.Include(o => o.OrderGoods).FirstOrDefault(item => item.Id == orderId);
             if (orderDbo == null)
             {
                 return new Result<Order>
@@ -154,7 +171,11 @@ namespace Billing.WebApi.Repositories
                         Phone = customerOfFoundOrder.Phone,
                         AdditionalInfo = customerOfFoundOrder.AdditionalInfo
                     },
-                    Goods = GetOrderGoods(orderId)
+                    Goods = orderDbo.OrderGoods.Select(item => new OrderGood 
+                    {
+                        Id = item.GoodId,
+                        Quantity = item.Quantity
+                    }).ToList()
                 }
             };
         }
@@ -163,22 +184,6 @@ namespace Billing.WebApi.Repositories
         public Result<Order> Update(Order orderToUpdate)
         {
             throw new NotImplementedException();
-        }
-
-        private List<OrderGood> GetOrderGoods(Guid orderId)
-        {
-            var goodsIdsAndQuantitiesOfDeletedOrder = billingContext.OrderGoods
-                .Where(item => item.OrderId == orderId)
-                .ToDictionary(item => item.GoodId);
-            return billingContext.Goods
-                .Where(good => goodsIdsAndQuantitiesOfDeletedOrder.ContainsKey(good.Id))
-                .Select(item => new OrderGood
-                {
-                    Id = item.Id,
-                    QuantityType = item.QuantityType,
-                    Quantity = goodsIdsAndQuantitiesOfDeletedOrder
-                    .GetValueOrDefault(item.Id).Quantity
-                }).ToList();
         }
     }
 }
