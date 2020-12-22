@@ -37,7 +37,9 @@ namespace Billing.WebApi.Controllers
             {
                 IsSuccess = resultFromRepository.IsSuccess,
                 Message = resultFromRepository.Message,
-                Value = resultFromRepository.Value != null ? orderConverter.ToGetDto(resultFromRepository.Value) : null
+                Value = resultFromRepository.Value != null 
+                    ? orderConverter.ToGetDto(resultFromRepository.Value) 
+                    : null
             };
         }
 
@@ -51,7 +53,7 @@ namespace Billing.WebApi.Controllers
 
             var resultFromRepository = ordersRepository.Create(orderToPost);
 
-            return CreatedAtAction(nameof(Get), new { id = orderToPost.Id }, new Result<GetOrderDto>
+            return CreatedAtAction(nameof(Get), new { id = resultFromRepository.Value.Id }, new Result<GetOrderDto>
             {
                 IsSuccess = resultFromRepository.IsSuccess,
                 Message = resultFromRepository.Message,

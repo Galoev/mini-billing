@@ -28,7 +28,7 @@ namespace Billing.WebApi.Repositories
                 };
             }
 
-            var order = new OrderDbo()
+            var orderDbo = new OrderDbo()
             {
                 CustomerId = orderToCreate.Customer.Id,
                 CreationDate = orderToCreate.CreationDate,
@@ -37,20 +37,20 @@ namespace Billing.WebApi.Repositories
                 DeliveryStatus = orderToCreate.DeliveryStatus
             };
 
-            var orderGoodLinks = orderToCreate.Goods.Select(good => new OrderGoodLinkDbo
+            var orderGoodLinks = orderToCreate.Goods.Select(g => new OrderGoodLinkDbo
             {
-                OrderId = order.Id,
-                GoodId = good.Id,
-                Quantity = good.Quantity
+                OrderId = orderDbo.Id,
+                GoodId = g.Id,
+                Quantity = g.Quantity
             }).ToList();
 
-            order.OrderGoods = orderGoodLinks;
-            billingContext.Orders.Add(order);
+            orderDbo.OrderGoods = orderGoodLinks;
+            billingContext.Orders.Add(orderDbo);
             var createdRows = billingContext.SaveChanges();
 
             if (createdRows > 0)
             {
-                orderToCreate.Id = order.Id;
+                orderToCreate.Id = orderDbo.Id;
                 orderToCreate.Customer.Name = customer.Name;
                 orderToCreate.Customer.Phone = customer.Phone;
                 orderToCreate.Customer.AdditionalInfo = customer.AdditionalInfo;
@@ -72,8 +72,9 @@ namespace Billing.WebApi.Repositories
 
         public Result<Order> Delete(Guid orderToDeleteId)
         {
-            var order = billingContext.Orders.Include(o => o.OrderGoods).FirstOrDefault(item => item.Id == orderToDeleteId);
-            if (order == null)
+            var orderDbo = billingContext.Orders.Include(o => o.OrderGoods)
+                .FirstOrDefault(o => o.Id == orderToDeleteId);
+            if (orderDbo == null)
             {
                 return new Result<Order> {
                     IsSuccess = false, 
@@ -81,7 +82,8 @@ namespace Billing.WebApi.Repositories
                 };
             }
 
-            var customerOfDeletedOrder = billingContext.Customers.FirstOrDefault(item => item.Id == order.CustomerId);
+            var customerOfDeletedOrder = billingContext.Customers
+                .FirstOrDefault(c => c.Id == orderDbo.CustomerId);
 
             if (customerOfDeletedOrder == null)
             {
@@ -96,23 +98,23 @@ namespace Billing.WebApi.Repositories
             {
                 Customer = new Customer
                 {
-                    Id = order.CustomerId,
+                    Id = orderDbo.CustomerId,
                     Name = customerOfDeletedOrder.Name,
                     Phone = customerOfDeletedOrder.Phone,
                     AdditionalInfo = customerOfDeletedOrder.AdditionalInfo
                 },
-                CreationDate = order.CreationDate,
-                Price = order.Price,
-                PaymentStatus = order.PaymentStatus,
-                DeliveryStatus = order.DeliveryStatus,
-                Goods = order.OrderGoods.Select(item => new OrderGood 
+                CreationDate = orderDbo.CreationDate,
+                Price = orderDbo.Price,
+                PaymentStatus = orderDbo.PaymentStatus,
+                DeliveryStatus = orderDbo.DeliveryStatus,
+                Goods = orderDbo.OrderGoods.Select(item => new OrderGood 
                 { 
                     Id = item.GoodId,
                     Quantity = item.Quantity
                 }).ToList()
             };
 
-            billingContext.Orders.Remove(order);
+            billingContext.Orders.Remove(orderDbo);
             var deletedRows = billingContext.SaveChanges();
 
             if (deletedRows > 0)
@@ -133,7 +135,8 @@ namespace Billing.WebApi.Repositories
 
         public Result<Order> Get(Guid orderId)
         {
-            var orderDbo = billingContext.Orders.Include(o => o.OrderGoods).FirstOrDefault(item => item.Id == orderId);
+            var orderDbo = billingContext.Orders.Include(o => o.OrderGoods)
+                .FirstOrDefault(o => o.Id == orderId);
             if (orderDbo == null)
             {
                 return new Result<Order>
@@ -143,7 +146,8 @@ namespace Billing.WebApi.Repositories
                 };
             }
 
-            var customerOfFoundOrder = billingContext.Customers.FirstOrDefault(c => c.Id == orderDbo.CustomerId);
+            var customerOfFoundOrder = billingContext.Customers
+                .FirstOrDefault(c => c.Id == orderDbo.CustomerId);
 
             if (customerOfFoundOrder == null)
             {
