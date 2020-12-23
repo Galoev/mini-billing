@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using Billing.WebApi.Console.Models;
 
 namespace Billing.WebApi.Console
 {
@@ -8,16 +6,19 @@ namespace Billing.WebApi.Console
     {
         private static Menu menu;
         private static Console console;
-        private static IController controller;
+        private static SearchBilling searchBilling;
 
         static void Main(string[] args)
         {
-            controller = new Controller();
+            searchBilling = new SearchBilling();
             console = new Console();
             InitMainMenu();
-            menu.Print();
-            int choose = console.ReadInt("Choose an option:", min: 1, max: menu.OptionsCount());
-            menu.ExecuteOption(choose - 1);
+            while (true)
+            {
+                menu.Print();
+                int choose = console.ReadInt("Choose an option:", min: 1, max: menu.OptionsCount());
+                menu.ExecuteOption(choose - 1);
+            }
         }
 
         static void InitMainMenu()
@@ -31,7 +32,7 @@ namespace Billing.WebApi.Console
 
         static void DisplayOrders()
         {
-            console.PrintTable(controller.getOrders());
+            console.PrintTable(searchBilling.GetInfoOrders());
         }
 
         static void CreateOrder()

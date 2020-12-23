@@ -4,44 +4,53 @@ using Billing.WebApi.Console.Models;
 
 namespace Billing.WebApi.Console
 {
-    public class Controller: IController
+    public class SearchBilling: ISearchBilling
     {
         private List<Customer> customers;
         private List<Order> orders;
+        private List<InfoOrder> infoOrders;
         private List<Component> components;
         private List<Good> goods;
+        private List<OrderGood> orderGoods;
 
-        public Controller()
+        public SearchBilling()
         {
-            customers = new List<Customer>();            
+            customers = new List<Customer>();
             orders = new List<Order>();
+            infoOrders = new List<InfoOrder>();
             components = new List<Component>();
             goods = new List<Good>();
+            orderGoods = new List<OrderGood>();
 
-            init();
+            Init();
         }
 
-        public void creatCustomer(Customer customer)
+        public IEnumerable<Customer> GetCustomers()
         {
-            throw new NotImplementedException();
+            return customers;
         }
 
-        public void createOrder(Order order)
+        public IEnumerable<Good> GetGoods()
         {
-            throw new NotImplementedException();
+            return goods;
         }
 
-        public IEnumerable<Good> getGoods()
+        public IEnumerable<InfoOrder> GetInfoOrders()
         {
-            throw new NotImplementedException();
+            return infoOrders;
         }
 
-        public IEnumerable<Order> getOrders()
+        public IEnumerable<OrderGood> GetOrderGoods()
+        {
+            return orderGoods;
+        }
+
+        public IEnumerable<Order> GetOrders()
         {
             return orders;
         }
 
-        private void init()
+        private void Init()
         {
             for (int i = 0; i < 10; i++)
             {
@@ -77,13 +86,36 @@ namespace Billing.WebApi.Console
 
             for (int i = 0; i < 5; i++)
             {
-                orders.Add(new Order
+                infoOrders.Add(new InfoOrder
                 {
                     Customer = customers[i],
                     OrderDate = DateTime.Now,
                     Price = i,
                     PaymentStatus = PaymentStatus.Paid,
                     DeliveryStatus = DeliveryStatus.Delivering
+                });
+            }
+
+            for (int i = 0; i < 5; i++)
+            {
+                orderGoods.Add(new OrderGood
+                {
+                    QuantityUnit = i,
+                    UnitPrice = i,
+                    Quantity = i
+                });
+            }
+
+            for (int i = 0; i < 5; i++)
+            {
+                orders.Add(new Order
+                {
+                    Customer = customers[i],
+                    OrderDate = DateTime.Now,
+                    Price = i,
+                    PaymentStatus = PaymentStatus.Paid,
+                    DeliveryStatus = DeliveryStatus.Delivering,
+                    Goods = goods
                 });
             }
         }
