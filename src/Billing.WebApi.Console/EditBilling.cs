@@ -13,12 +13,12 @@ namespace Billing.WebApi.Console
 
         public void CreatCustomer(Customer customer)
         {
-            throw new NotImplementedException();
+            return;
         }
 
         public void CreateOrder(CreateOrder order)
         {
-            throw new NotImplementedException();
+            return;
         }
     }
 }

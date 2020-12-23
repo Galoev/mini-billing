@@ -6,10 +6,11 @@ namespace Billing.WebApi.Console
 {
     public interface ISearchBilling
     {
-        IEnumerable<Good> GetGoods();
-        IEnumerable<OrderGood> GetOrderGoods();
-        IEnumerable<InfoOrder> GetInfoOrders();
-        IEnumerable<Order> GetOrders();
-        IEnumerable<Customer> GetCustomers();
+        List<Good> GetGoods();
+        List<OrderGood> GetOrderGoods();
+        List<InfoGood> GetInfoGoods();
+        List<InfoOrder> GetInfoOrders();
+        List<Order> GetOrders();
+        List<Customer> GetCustomers();
     }
 }

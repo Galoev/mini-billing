@@ -12,6 +12,7 @@ namespace Billing.WebApi.Console
         private List<Component> components;
         private List<Good> goods;
         private List<OrderGood> orderGoods;
+        private List<InfoGood> infoGoods;
 
         public SearchBilling()
         {
@@ -21,31 +22,37 @@ namespace Billing.WebApi.Console
             components = new List<Component>();
             goods = new List<Good>();
             orderGoods = new List<OrderGood>();
+            infoGoods = new List<InfoGood>();
 
             Init();
         }
 
-        public IEnumerable<Customer> GetCustomers()
+        public List<Customer> GetCustomers()
         {
             return customers;
         }
 
-        public IEnumerable<Good> GetGoods()
+        public List<Good> GetGoods()
         {
             return goods;
         }
 
-        public IEnumerable<InfoOrder> GetInfoOrders()
+        public List<InfoGood> GetInfoGoods()
+        {
+            return infoGoods;
+        }
+
+        public List<InfoOrder> GetInfoOrders()
         {
             return infoOrders;
         }
 
-        public IEnumerable<OrderGood> GetOrderGoods()
+        public List<OrderGood> GetOrderGoods()
         {
             return orderGoods;
         }
 
-        public IEnumerable<Order> GetOrders()
+        public List<Order> GetOrders()
         {
             return orders;
         }
@@ -81,6 +88,16 @@ namespace Billing.WebApi.Console
                     UnitPrice = i,
                     Description = $"Good_{i}",
                     Components = components
+                });
+            }
+
+            for (int i = 0; i < 5; i++)
+            {
+                infoGoods.Add(new InfoGood
+                {
+                    QuantityType = QuantityType.Litre,
+                    UnitPrice = i,
+                    Description = $"Good_{i}"
                 });
             }
 
