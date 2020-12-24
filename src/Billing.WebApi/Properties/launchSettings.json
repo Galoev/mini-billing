@@ -11,18 +11,8 @@
   "profiles": {
     "IIS Express": {
       "commandName": "IISExpress",
-      "launchBrowser": true,
-      "launchUrl": "api/simple",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
-    "TodoApi": {
-      "commandName": "Project",
-      "dotnetRunMessages": "true",
-      "launchBrowser": true,
-      "launchUrl": "swagger",
-      "applicationUrl": "https://localhost:5001;http://localhost:5000",
+      "launchBrowser": false,
+      "launchUrl": "api/billing",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
