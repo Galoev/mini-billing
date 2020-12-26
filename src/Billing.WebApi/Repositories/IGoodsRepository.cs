@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Billing.WebApi.Repositories
 {
-    public interface IGoodRepository
+    public interface IGoodsRepository
     {
         Result<Good> Create(Good goodToCreate);
 
