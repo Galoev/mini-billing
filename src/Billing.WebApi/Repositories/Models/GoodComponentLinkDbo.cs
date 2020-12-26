@@ -7,5 +7,7 @@ namespace Billing.WebApi.Repositories.Models
         public Guid GoodId { get; set; }
         public Guid ComponentId { get; set; }
         public int Quantity { get; set; }
+
+        public virtual GoodDbo Good { get; set; }
     }
 }
