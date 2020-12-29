@@ -4,7 +4,7 @@ namespace Billing.WebApi.Models.Converter
 {
     public interface IGoodConverter
     {
-        public Good FromCreateGoodDto(CreateGoodDto createGoodDto);
-        public GetGoodDto ToGetGoodDto(Good good);
+        public Good FromCreateDto(CreateGoodDto createGoodDto);
+        public GetGoodDto ToGetDto(Good good);
     }
 }
