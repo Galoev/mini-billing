@@ -1,6 +1,7 @@
 ﻿using Billing.WebApi.Models;
 using Billing.WebApi.Repositories.Models;
 using Billing.WebApi.Utility;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -101,7 +102,8 @@ namespace Billing.WebApi.Repositories
 
         public Result<Good> Get(Guid goodId)
         {
-            var goodDbo = billingContext.Goods.FirstOrDefault(g => g.Id == goodId);
+            var goodDbo = billingContext.Goods.Include(g => g.GoodComponents)
+                .FirstOrDefault(g => g.Id == goodId);
             if (goodDbo == null)
             {
                 return new Result<Good>
@@ -126,7 +128,7 @@ namespace Billing.WebApi.Repositories
 
             return new Result<Good>
             {
-                IsSuccess = false,
+                IsSuccess = true,
                 Message = $"Good with id {goodId} successfully found!",
                 Value = good
             };
