@@ -7,9 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Billing.WebApi", "src\Billi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{36B598F8-6F6B-4489-BF58-AF136D4A8212}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Billing.WebApi.Client", "src\Billing.WebApi.Client\Billing.WebApi.Client.csproj", "{5A90C7B9-CD3B-4D63-B655-A5D8A6B6A925}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Billing.WebApi.Client", "src\Billing.WebApi.Client\Billing.WebApi.Client.csproj", "{5A90C7B9-CD3B-4D63-B655-A5D8A6B6A925}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Billing.WebApi.Console", "src\Billing.WebApi.Console\Billing.WebApi.Console.csproj", "{08935D79-8351-4DFB-8FBE-6DFB248BDA2A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Billing.WebApi.Console", "src\Billing.WebApi.Console\Billing.WebApi.Console.csproj", "{08935D79-8351-4DFB-8FBE-6DFB248BDA2A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Billing.WebApi.Tests", "src\Billing.WebApi.Tests\Billing.WebApi.Tests.csproj", "{C93022BB-3BE6-4966-9DDB-B0F5552040FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +31,10 @@ Global
 		{08935D79-8351-4DFB-8FBE-6DFB248BDA2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{08935D79-8351-4DFB-8FBE-6DFB248BDA2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{08935D79-8351-4DFB-8FBE-6DFB248BDA2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C93022BB-3BE6-4966-9DDB-B0F5552040FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C93022BB-3BE6-4966-9DDB-B0F5552040FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C93022BB-3BE6-4966-9DDB-B0F5552040FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C93022BB-3BE6-4966-9DDB-B0F5552040FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
