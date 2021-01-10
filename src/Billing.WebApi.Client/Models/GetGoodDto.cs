@@ -1,17 +1,15 @@
-﻿using System.Collections.Generic;
-using System;
-using Billing.WebApi.Client.Models;
+﻿using System;
+using System.Collections.Generic;
 
-namespace Billing.WebApi.Models
+namespace Billing.WebApi.Client.Models
 {
-    public class Good
+    public class GetGoodDto
     {
         public Guid Id { get; set; }
-
         public QuantityType QuantityType { get; set; }
         public decimal UnitPrice { get; set; }
         public string Description { get; set; }
 
-        public List<GoodComponent> Components { get; set; }
+        public List<GoodComponentDto> Components { get; set; }
     }
 }

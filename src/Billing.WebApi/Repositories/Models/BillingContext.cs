@@ -167,8 +167,8 @@ namespace Billing.WebApi.Repositories.Models
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("GoodComponent_component_id_fkey");
 
-                entity.HasOne<GoodDbo>()
-                    .WithMany()
+                entity.HasOne(d => d.Good)
+                    .WithMany(p => p.GoodComponents)
                     .HasForeignKey(d => d.GoodId)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("GoodComponents_goods_id_fkey");

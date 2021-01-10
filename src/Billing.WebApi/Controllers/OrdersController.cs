@@ -10,25 +10,23 @@ namespace Billing.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BillingController : ControllerBase
+    public class OrdersController : ControllerBase
     {
         private readonly IOrdersRepository ordersRepository;
         private readonly IOrderConverter orderConverter;
 
-        public BillingController(IOrdersRepository ordersRepository, IOrderConverter orderConverter)
+        public OrdersController(IOrdersRepository ordersRepository, IOrderConverter orderConverter)
         {
             this.ordersRepository = ordersRepository;
             this.orderConverter = orderConverter;
         }
 
-        // GET: api/<BillingController>
         [HttpGet]
         public ActionResult<IEnumerable<GetOrderDto>> Get()
         {
             throw new NotImplementedException();
         }
 
-        // GET api/<BillingController>/5
         [HttpGet("{id}")]
         public ActionResult<Result<GetOrderDto>> Get(Guid id)
         {
@@ -43,7 +41,6 @@ namespace Billing.WebApi.Controllers
             };
         }
 
-        // POST api/<BillingController>
         [HttpPost]
         public ActionResult<Result<GetOrderDto>> Post([FromBody] CreateOrderDto orderDto)
         {
@@ -63,7 +60,6 @@ namespace Billing.WebApi.Controllers
             });
         }
 
-        // PUT api/<BillingController>
         [HttpPut]
         public ActionResult<Result<GetOrderDto>> Put([FromBody] CreateOrderDto orderDto)
         {
@@ -78,7 +74,6 @@ namespace Billing.WebApi.Controllers
             };
         }
 
-        // DELETE api/<BillingController>/5
         [HttpDelete("{id}")]
         public ActionResult<Result<GetOrderDto>> Delete(Guid id)
         {
