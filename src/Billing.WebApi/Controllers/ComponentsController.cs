@@ -1,7 +1,7 @@
 ﻿using Billing.WebApi.Client.Models;
 using Billing.WebApi.Models;
 using Billing.WebApi.Repositories;
-using Billing.WebApi.Utility;
+using Billing.WebApi.Client.Utility;
 using Microsoft.AspNetCore.Mvc;
 using System;
 

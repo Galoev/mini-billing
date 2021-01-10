@@ -1,7 +1,7 @@
 ﻿using System;
 
 using Billing.WebApi.Models;
-using Billing.WebApi.Utility;
+using Billing.WebApi.Client.Utility;
 
 namespace Billing.WebApi.Repositories
 {

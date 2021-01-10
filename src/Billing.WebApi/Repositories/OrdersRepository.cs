@@ -4,7 +4,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
 using Billing.WebApi.Models;
-using Billing.WebApi.Utility;
+using Billing.WebApi.Client.Utility;
 
 namespace Billing.WebApi.Repositories
 {

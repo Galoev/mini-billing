@@ -1,4 +1,4 @@
-﻿namespace Billing.WebApi.Utility
+﻿namespace Billing.WebApi.Client.Utility
 {
     public class Result<T>    
     {

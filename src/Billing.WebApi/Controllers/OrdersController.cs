@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using Billing.WebApi.Repositories;
 using Billing.WebApi.Client.Models;
-using Billing.WebApi.Utility;
+using Billing.WebApi.Client.Utility;
 using Billing.WebApi.Models.Converter;
 
 namespace Billing.WebApi.Controllers
