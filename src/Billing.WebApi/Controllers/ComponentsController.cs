@@ -11,9 +11,9 @@ namespace Billing.WebApi.Controllers
     [ApiController]
     public class ComponentsController : ControllerBase
     {
-        private readonly IComponentRepository componentRepository;
+        private readonly IComponentsRepository componentRepository;
 
-        public ComponentsController(IComponentRepository componentRepository)
+        public ComponentsController(IComponentsRepository componentRepository)
         {
             this.componentRepository = componentRepository;
         }

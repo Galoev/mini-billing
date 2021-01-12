@@ -6,11 +6,11 @@ using System.Linq;
 
 namespace Billing.WebApi.Repositories
 {
-    public class ComponentRepository : IComponentRepository
+    public class ComponentsRepository : IComponentsRepository
     {
         private readonly BillingContext billingContext;
 
-        public ComponentRepository(BillingContext billingContext)
+        public ComponentsRepository(BillingContext billingContext)
         {
             this.billingContext = billingContext;
         }

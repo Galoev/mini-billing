@@ -7,11 +7,11 @@ using System.Linq;
 
 namespace Billing.WebApi.Repositories
 {
-    public class CustomerRespository : ICustomerRepository
+    public class CustomersRespository : ICustomersRepository
     {
         private readonly BillingContext billingContext;
 
-        public CustomerRespository(BillingContext billingContext)
+        public CustomersRespository(BillingContext billingContext)
         {
             this.billingContext = billingContext;
         }

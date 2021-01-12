@@ -4,7 +4,7 @@ using System;
 
 namespace Billing.WebApi.Repositories
 {
-    public interface IComponentRepository
+    public interface IComponentsRepository
     {
         Result<Component> Create(Component componentToCreate);
 

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Billing.WebApi.Repositories
 {
-    public interface ICustomerRepository
+    public interface ICustomersRepository
     {
         Result<Customer> Create(Customer customerToCreate);
 
