@@ -41,7 +41,7 @@ namespace Billing.WebApi.Console
 
         static void CreateOrder()
         {
-            List<Customer> customers = searchBilling.GetCustomers();
+            List<Customer> customers = searchBilling.GetCustomers().Result;
             Customer customer = null;
 
             console.PrintTable(customers);

@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Billing.WebApi.Client.Clients;
 using Billing.WebApi.Console.Models;
 
 namespace Billing.WebApi.Console
@@ -14,6 +17,8 @@ namespace Billing.WebApi.Console
         private List<OrderGood> orderGoods;
         private List<InfoGood> infoGoods;
 
+        private readonly CustomersClient customersClient;
+
         public SearchBilling()
         {
             customers = new List<Customer>();
@@ -24,12 +29,24 @@ namespace Billing.WebApi.Console
             orderGoods = new List<OrderGood>();
             infoGoods = new List<InfoGood>();
 
+            customersClient = new CustomersClient("https://localhost:44311");
+
             Init();
         }
 
-        public List<Customer> GetCustomers()
+        public async Task<List<Customer>> GetCustomers()
         {
-            return customers;
+            var resultFromClient = await customersClient.GetCustomersAsync();
+            if (resultFromClient.IsSuccess)
+            {
+                return resultFromClient.Value.Select(c => new Customer
+                {
+                    Name = c.Name,
+                    Phone = c.Phone,
+                    AdditionalInfo = c.AdditionalInfo
+                }).ToList();
+            }
+            return Enumerable.Empty<Customer>().ToList();
         }
 
         public List<Good> GetGoods()

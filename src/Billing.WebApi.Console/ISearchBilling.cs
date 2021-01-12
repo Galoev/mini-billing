@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Billing.WebApi.Console.Models;
 
 namespace Billing.WebApi.Console
@@ -11,6 +12,6 @@ namespace Billing.WebApi.Console
         List<InfoGood> GetInfoGoods();
         List<InfoOrder> GetInfoOrders();
         List<Order> GetOrders();
-        List<Customer> GetCustomers();
+        Task<List<Customer>> GetCustomers();
     }
 }
