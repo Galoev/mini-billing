@@ -11,11 +11,11 @@ namespace Billing.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomerController : ControllerBase
+    public class CustomersController : ControllerBase
     {
         private readonly ICustomersRepository customersRepository;
 
-        public CustomerController(ICustomersRepository customersRepository)
+        public CustomersController(ICustomersRepository customersRepository)
         {
             this.customersRepository = customersRepository;
         }
