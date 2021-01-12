@@ -13,6 +13,8 @@ namespace Billing.WebApi.Models
         public decimal Price { get; set; }
         public PaymentStatus PaymentStatus { get; set; }
         public DeliveryStatus DeliveryStatus { get; set; }
+
+        // возможно стоит убрать customer-а и оставить только его id
         public Customer Customer { get; set; }
         public List<OrderGood> Goods { get; set; }
     }
