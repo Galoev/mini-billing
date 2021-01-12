@@ -5,6 +5,7 @@ using Billing.WebApi.Repositories;
 using Billing.WebApi.Client.Models;
 using Billing.WebApi.Client.Utility;
 using Billing.WebApi.Models.Converter;
+using System.Linq;
 
 namespace Billing.WebApi.Controllers
 {
@@ -22,9 +23,17 @@ namespace Billing.WebApi.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<GetOrderDto>> Get()
+        public ActionResult<Result<List<GetOrderDto>>> GetAll()
         {
-            throw new NotImplementedException();
+            var resultFromRepository = ordersRepository.Get();
+            return new Result<List<GetOrderDto>>
+            {
+                IsSuccess = resultFromRepository.IsSuccess,
+                Message = resultFromRepository.Message,
+                Value = resultFromRepository.Value != null
+                    ? resultFromRepository.Value.Select(o => orderConverter.ToGetDto(o)).ToList()
+                    : null
+            };
         }
 
         [HttpGet("{id}")]

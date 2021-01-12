@@ -2,6 +2,7 @@
 
 using Billing.WebApi.Models;
 using Billing.WebApi.Client.Utility;
+using System.Collections.Generic;
 
 namespace Billing.WebApi.Repositories
 {
@@ -10,6 +11,8 @@ namespace Billing.WebApi.Repositories
         Result<Order> Create(Order orderToCreate);
 
         Result<Order> Get(Guid orderId);
+
+        Result<List<Order>> Get();
 
         Result<Order> Update(Order orderToUpdate);
 

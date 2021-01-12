@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 using Billing.WebApi.Models;
 using Billing.WebApi.Client.Utility;
+using System.Collections.Generic;
 
 namespace Billing.WebApi.Repositories
 {
@@ -181,6 +182,35 @@ namespace Billing.WebApi.Repositories
                         Quantity = item.Quantity
                     }).ToList()
                 }
+            };
+        }
+
+        public Result<List<Order>> Get()
+        {
+            var listOfOrders = billingContext.Orders.Include(o => o.OrderGoods)
+                .Select(o => new Order
+                {
+                    Id = o.Id,
+                    CreationDate = o.CreationDate,
+                    Price = o.Price,
+                    PaymentStatus = o.PaymentStatus,
+                    DeliveryStatus = o.DeliveryStatus,
+                    Customer = new Customer
+                    {
+                        Id = o.CustomerId
+                    },
+                    Goods = o.OrderGoods.Select(g => new OrderGood
+                    {
+                        Id = g.GoodId,
+                        Quantity = g.Quantity
+                    }).ToList()
+                }).ToList();
+
+            return new Result<List<Order>>
+            {
+                IsSuccess = true,
+                Message = $"List of orders successfully found!",
+                Value = listOfOrders
             };
         }
 
