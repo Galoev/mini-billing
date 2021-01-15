@@ -8,86 +8,86 @@ using Billing.WebApi.Client.Utility;
 
 namespace Billing.WebApi.Client.Clients
 {
-    public class OrdersClient
+    public class GoodsClient
     {
         public string BaseUrl { get; }
 
-        public OrdersClient(string baseUrl)
+        public GoodsClient(string baseUrl)
         {
             BaseUrl = baseUrl;
         }
 
-        public async Task<Result<GetOrderDto>> CreateOrderAsync(CreateOrderDto orderToCreate)
+        public async Task<Result<GetGoodDto>> CreateGoodAsync(CreateGoodDto goodToCreate)
         {
             using (var client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                Result<GetOrderDto> result = null;
-                HttpResponseMessage response = await client.PostAsJsonAsync(BaseUrl + "/api/orders", orderToCreate);
+                Result<GetGoodDto> result = null;
+                HttpResponseMessage response = await client.PostAsJsonAsync(BaseUrl + "/api/goods", goodToCreate);
                 if (response.IsSuccessStatusCode)
                 {
-                    result = await response.Content.ReadAsAsync<Result<GetOrderDto>>();
+                    result = await response.Content.ReadAsAsync<Result<GetGoodDto>>();
                 }
                 return result;
             }
         }
 
-        public async Task<Result<GetOrderDto>> GetOrderAsync(Guid orderId)
+        public async Task<Result<GetGoodDto>> GetGoodAsync(Guid goodId)
         {
             using (var client = new HttpClient())
             {
-                Result<GetOrderDto> result = null;
-                HttpResponseMessage response = await client.GetAsync(BaseUrl + $"/api/orders/{orderId}");
+                Result<GetGoodDto> result = null;
+                HttpResponseMessage response = await client.GetAsync(BaseUrl + $"/api/goods/{goodId}");
                 if (response.IsSuccessStatusCode)
                 {
-                    result = await response.Content.ReadAsAsync<Result<GetOrderDto>>();
+                    result = await response.Content.ReadAsAsync<Result<GetGoodDto>>();
                 }
                 return result;
             }
         }
 
-        public async Task<Result<List<GetOrderDto>>> GetOrdersAsync()
+        public async Task<Result<List<GetGoodDto>>> GetGoodAsync()
         {
             using (var client = new HttpClient())
             {
-                Result<List<GetOrderDto>> result = null;
-                HttpResponseMessage response = await client.GetAsync(BaseUrl + "/api/orders");
+                Result<List<GetGoodDto>> result = null;
+                HttpResponseMessage response = await client.GetAsync(BaseUrl + "/api/goods");
                 if (response.IsSuccessStatusCode)
                 {
-                    result = await response.Content.ReadAsAsync<Result<List<GetOrderDto>>>();
+                    result = await response.Content.ReadAsAsync<Result<List<GetGoodDto>>>();
                 }
                 return result;
             }
         }
 
-        public async Task<Result<GetOrderDto>> UpdateOrderAsync(CreateOrderDto orderToUpdate)
+        public async Task<Result<GetGoodDto>> UpdateGoodAsync(CreateGoodDto goodToUpdate)
         {
             using (var client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                Result<GetOrderDto> result = null;
-                HttpResponseMessage response = await client.PutAsJsonAsync(BaseUrl + "/api/orders", orderToUpdate);
+                Result<GetGoodDto> result = null;
+                HttpResponseMessage response = await client.PutAsJsonAsync(BaseUrl + "/api/goods", goodToUpdate);
                 if (response.IsSuccessStatusCode)
                 {
-                    result = await response.Content.ReadAsAsync<Result<GetOrderDto>>();
+                    result = await response.Content.ReadAsAsync<Result<GetGoodDto>>();
                 }
                 return result;
             }
         }
 
-        public async Task<Result<GetOrderDto>> DeleteOrderAsync(Guid orderId)
+        public async Task<Result<GetGoodDto>> DeleteGoodAsync(Guid goodId)
         {
             using (var client = new HttpClient())
             {
-                Result<GetOrderDto> result = null;
-                HttpResponseMessage response = await client.DeleteAsync(BaseUrl + $"/api/orders/{orderId}");
+                Result<GetGoodDto> result = null;
+                HttpResponseMessage response = await client.DeleteAsync(BaseUrl + $"/api/goods/{goodId}");
                 if (response.IsSuccessStatusCode)
                 {
-                    result = await response.Content.ReadAsAsync<Result<GetOrderDto>>();
+                    result = await response.Content.ReadAsAsync<Result<GetGoodDto>>();
                 }
                 return result;
             }

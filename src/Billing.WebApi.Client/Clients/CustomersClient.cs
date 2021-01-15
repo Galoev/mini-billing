@@ -47,5 +47,50 @@ namespace Billing.WebApi.Client.Clients
                 return result;
             }
         }
+
+        public async Task<Result<CustomerDto>> GetCustomerAsync(Guid customerId)
+        {
+            using (var client = new HttpClient())
+            {
+                Result<CustomerDto> result = null;
+                HttpResponseMessage response = await client.GetAsync(BaseUrl + $"/api/customers/{customerId}");
+                if (response.IsSuccessStatusCode)
+                {
+                    result = await response.Content.ReadAsAsync<Result<CustomerDto>>();
+                }
+                return result;
+            }
+        }
+
+        public async Task<Result<CustomerDto>> DeleteCustomerAsync(Guid customerId)
+        {
+            using (var client = new HttpClient())
+            {
+                Result<CustomerDto> result = null;
+                HttpResponseMessage response = await client.DeleteAsync(BaseUrl + $"/api/customers/{customerId}");
+                if (response.IsSuccessStatusCode)
+                {
+                    result = await response.Content.ReadAsAsync<Result<CustomerDto>>();
+                }
+                return result;
+            }
+        }
+
+        public async Task<Result<CustomerDto>> UpdateCustomerAsync(CustomerDto customerToUpdate)
+        {
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                Result<CustomerDto> result = null;
+                HttpResponseMessage response = await client.PutAsJsonAsync(BaseUrl + "/api/customers", customerToUpdate);
+                if (response.IsSuccessStatusCode)
+                {
+                    result = await response.Content.ReadAsAsync<Result<CustomerDto>>();
+                }
+                return result;
+            }
+        }
     }
 }
