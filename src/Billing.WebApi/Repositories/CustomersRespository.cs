@@ -111,7 +111,7 @@ namespace Billing.WebApi.Repositories
             };
         }
 
-        public Result<List<Customer>> Get()
+        public Result<List<Customer>> GetAll()
         {
             var listOfCustomers = billingContext.Customers.Select(c => new Customer
             {

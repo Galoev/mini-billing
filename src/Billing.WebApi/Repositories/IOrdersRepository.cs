@@ -12,7 +12,7 @@ namespace Billing.WebApi.Repositories
 
         Result<Order> Get(Guid orderId);
 
-        Result<List<Order>> Get();
+        Result<List<Order>> GetAll();
 
         Result<Order> Update(Order orderToUpdate);
 

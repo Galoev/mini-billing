@@ -185,7 +185,7 @@ namespace Billing.WebApi.Repositories
             };
         }
 
-        public Result<List<Order>> Get()
+        public Result<List<Order>> GetAll()
         {
             var listOfOrders = billingContext.Orders.Include(o => o.OrderGoods)
                 .Select(o => new Order

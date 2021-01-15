@@ -11,7 +11,7 @@ namespace Billing.WebApi.Repositories
 
         Result<Customer> Get(Guid customerId);
 
-        Result<List<Customer>> Get();
+        Result<List<Customer>> GetAll();
 
         Result<Customer> Update(Customer customerToUpdate);
 

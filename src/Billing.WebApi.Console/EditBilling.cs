@@ -11,7 +11,7 @@ namespace Billing.WebApi.Console
         {
         }
 
-        public void CreatCustomer(Customer customer)
+        public void CreateCustomer(Customer customer)
         {
             return;
         }

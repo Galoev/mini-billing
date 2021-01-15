@@ -5,7 +5,7 @@ namespace Billing.WebApi.Console
 {
     public interface IEditBilling
     {
-        void CreatCustomer(Customer customer);
+        void CreateCustomer(Customer customer);
         void CreateOrder(CreateOrder order);
     }
 }

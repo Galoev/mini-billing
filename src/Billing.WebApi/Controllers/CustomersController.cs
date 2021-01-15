@@ -23,7 +23,7 @@ namespace Billing.WebApi.Controllers
         [HttpGet]
         public ActionResult<Result<List<CustomerDto>>> GetAll()
         {
-            var resultFromRepository = customersRepository.Get();
+            var resultFromRepository = customersRepository.GetAll();
             return new Result<List<CustomerDto>>
             {
                 IsSuccess = resultFromRepository.IsSuccess,

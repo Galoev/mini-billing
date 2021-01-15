@@ -25,7 +25,7 @@ namespace Billing.WebApi.Controllers
         [HttpGet]
         public ActionResult<Result<List<GetOrderDto>>> GetAll()
         {
-            var resultFromRepository = ordersRepository.Get();
+            var resultFromRepository = ordersRepository.GetAll();
             return new Result<List<GetOrderDto>>
             {
                 IsSuccess = resultFromRepository.IsSuccess,
