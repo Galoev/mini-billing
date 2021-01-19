@@ -31,5 +31,18 @@ namespace Billing.WebApi.Console.Converters
                 Goods = order.Goods.Select(g => GoodConverter.ToDto(g)).ToList()
             };
         }
+
+        public static InfoOrder InfoOrderFromDto(GetOrderDto orderDto) 
+        {
+            return new InfoOrder
+            {
+                Id = orderDto.Id,
+                CustomerId = orderDto.Customer.Id,
+                CreationDate = orderDto.CreationDate,
+                DeliveryStatus = orderDto.DeliveryStatus,
+                PaymentStatus = orderDto.PaymentStatus,
+                Price = orderDto.Price
+            };
+        }
     }
 }
