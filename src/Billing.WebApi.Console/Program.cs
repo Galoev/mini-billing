@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Billing.WebApi.Client.Models;
 using Billing.WebApi.Console.Models;
 
 namespace Billing.WebApi.Console
@@ -36,7 +37,7 @@ namespace Billing.WebApi.Console
 
         static void DisplayOrders()
         {
-            console.PrintTable(searchBilling.GetInfoOrders());
+            console.PrintTable(searchBilling.GetInfoOrders().Result);
         }
 
         static void CreateOrder()
@@ -53,8 +54,7 @@ namespace Billing.WebApi.Console
             customerMenu.ExecuteOption(choose - 1);
 
             var goodsReady = false;
-            List<OrderGood> goods = searchBilling.GetOrderGoods();
-            List<InfoGood> infoGoods = searchBilling.GetInfoGoods();
+            List<InfoGood> infoGoods = searchBilling.GetInfoGoods().Result;
             List<OrderGood> orderGoods = new List<OrderGood>();
             while (!goodsReady)
             {
@@ -62,8 +62,11 @@ namespace Billing.WebApi.Console
                 int quantity = -1;
                 console.PrintTable(infoGoods);
                 var goodsMenu = new Menu();
-                goodsMenu.Add("Chose good", () => {
-                    orderGood = goods[console.ReadInt("Enter good number:", min: 1, max: goods.Count) - 1];
+                goodsMenu.Add("Choose good", () => {
+                    orderGood = new OrderGood
+                    {
+                        Id = infoGoods[console.ReadInt("Enter good number:", min: 1, max: infoGoods.Count) - 1].Id
+                    }; 
                     quantity = console.ReadInt("Enter the quantity of goods", min: 1, max: int.MaxValue);
                     orderGood.Quantity = quantity;
                     orderGoods.Add(orderGood);
@@ -80,14 +83,14 @@ namespace Billing.WebApi.Console
 
             CreateOrder order = new CreateOrder
             {
-                Customer = customer,
-                OrderDate = date,
+                CustomerId = customer.Id,
+                CreationDate = date,
                 Goods = orderGoods,
                 PaymentStatus = PaymentStatus.Unpaid,
                 DeliveryStatus = DeliveryStatus.DeliveryWaiting
             };
 
-            editBilling.CreateOrder(order);
+            var createdOrder = editBilling.CreateOrder(order).Result;
             System.Console.WriteLine("Order successfully created");
         }
 
@@ -104,7 +107,10 @@ namespace Billing.WebApi.Console
             var phone = System.Console.ReadLine();
             System.Console.WriteLine("Enter customer information:");
             var info = System.Console.ReadLine();
-            var customer = new Customer { Name = name, Phone = phone, AdditionalInfo = info };            
+            var customer = new Customer { Name = name, Phone = phone, AdditionalInfo = info };
+
+            customer = editBilling.CreateCustomer(customer).Result;
+
             return customer;
         }
     }

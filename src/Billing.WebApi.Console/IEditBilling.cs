@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Billing.WebApi.Console.Models;
 
 namespace Billing.WebApi.Console
 {
     public interface IEditBilling
     {
-        void CreateCustomer(Customer customer);
-        void CreateOrder(CreateOrder order);
+        Task<Customer> CreateCustomer(Customer customer);
+        Task<Order> CreateOrder(CreateOrder order);
     }
 }
