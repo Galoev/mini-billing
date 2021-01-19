@@ -48,7 +48,7 @@ namespace Billing.WebApi.Client.Clients
             }
         }
 
-        public async Task<Result<List<GetGoodDto>>> GetGoodAsync()
+        public async Task<Result<List<GetGoodDto>>> GetGoodsAsync()
         {
             using (var client = new HttpClient())
             {
