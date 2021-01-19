@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Billing.WebApi.Client.Models;
+
 namespace Billing.WebApi.Console.Models
 {
     public class InfoGood
