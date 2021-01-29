@@ -54,7 +54,7 @@ namespace Billing.WebApi.Console
             customerMenu.ExecuteOption(choose - 1);
 
             var goodsReady = false;
-            List<InfoGood> infoGoods = searchBilling.GetInfoGoods().Result;
+            List<GoodInfo> infoGoods = searchBilling.GetInfoGoods().Result;
             List<OrderGood> orderGoods = new List<OrderGood>();
             while (!goodsReady)
             {

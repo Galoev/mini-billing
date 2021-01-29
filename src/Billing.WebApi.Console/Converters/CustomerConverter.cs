@@ -5,28 +5,22 @@ namespace Billing.WebApi.Console.Converters
 {
     public class CustomerConverter
     {
-        public static Customer FromDto(CustomerDto customerDto)
+        public static Customer FromDto(CustomerDto customerDto) => new Customer
         {
-            return new Customer
-            {
-                Id = customerDto.Id,
-                Phone = customerDto.Phone,
-                Name = customerDto.Name,
-                AdditionalInfo = customerDto.AdditionalInfo ?? ""
-            };
-        }
+            Id = customerDto.Id,
+            Phone = customerDto.Phone,
+            Name = customerDto.Name,
+            AdditionalInfo = customerDto.AdditionalInfo ?? string.Empty
+        };
 
-        public static CustomerDto ToDto(Customer customer)
+        public static CustomerDto ToDto(Customer customer) => new CustomerDto
         {
-            return new CustomerDto
-            {
-                Id = customer.Id,
-                Phone = customer.Phone,
-                Name = customer.Name,
-                AdditionalInfo = string.IsNullOrEmpty(customer.AdditionalInfo) 
-                    ? null 
+            Id = customer.Id,
+            Phone = customer.Phone,
+            Name = customer.Name,
+            AdditionalInfo = string.IsNullOrEmpty(customer.AdditionalInfo)
+                    ? null
                     : customer.AdditionalInfo
-            };
-        } 
+        };
     }
 }

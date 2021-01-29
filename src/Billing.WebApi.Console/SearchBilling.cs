@@ -42,14 +42,14 @@ namespace Billing.WebApi.Console
             return Enumerable.Empty<Good>().ToList();
         }
 
-        public async Task<List<InfoGood>> GetInfoGoods()
+        public async Task<List<GoodInfo>> GetInfoGoods()
         {
             var resultFromClient = await goodsClient.GetGoodsAsync();
             if (resultFromClient.IsSuccess)
             {
                 return resultFromClient.Value.Select(g => GoodConverter.InfoGoodFromDto(g)).ToList();
             }
-            return Enumerable.Empty<InfoGood>().ToList();
+            return Enumerable.Empty<GoodInfo>().ToList();
         }
 
         public async Task<List<Order>> GetOrders()
@@ -62,14 +62,14 @@ namespace Billing.WebApi.Console
             return Enumerable.Empty<Order>().ToList();
         }
 
-        public async Task<List<InfoOrder>> GetInfoOrders()
+        public async Task<List<OrderInfo>> GetInfoOrders()
         {
             var resultFromClient = await ordersClient.GetOrdersAsync();
             if (resultFromClient.IsSuccess)
             {
                 return resultFromClient.Value.Select(o => OrderConverter.InfoOrderFromDto(o)).ToList();
             }
-            return Enumerable.Empty<InfoOrder>().ToList();
+            return Enumerable.Empty<OrderInfo>().ToList();
         }
     }
 }

@@ -3,7 +3,7 @@ using System;
 
 namespace Billing.WebApi.Console.Models
 {
-    public class InfoOrder
+    public class OrderInfo
     {
         public Guid Id { get; set; }
         public Guid CustomerId { get; set; }

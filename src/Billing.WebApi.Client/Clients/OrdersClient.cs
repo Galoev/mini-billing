@@ -11,6 +11,7 @@ namespace Billing.WebApi.Client.Clients
     public class OrdersClient
     {
         public string BaseUrl { get; }
+        private static readonly string apiUrl = "api/orders";
 
         public OrdersClient(string baseUrl)
         {
@@ -23,14 +24,8 @@ namespace Billing.WebApi.Client.Clients
             {
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                Result<GetOrderDto> result = null;
-                HttpResponseMessage response = await client.PostAsJsonAsync(BaseUrl + "/api/orders", orderToCreate);
-                if (response.IsSuccessStatusCode)
-                {
-                    result = await response.Content.ReadAsAsync<Result<GetOrderDto>>();
-                }
-                return result;
+                HttpResponseMessage response = await client.PostAsJsonAsync($"{BaseUrl}/{apiUrl}", orderToCreate);
+                return response.IsSuccessStatusCode ? await response.Content.ReadAsAsync<Result<GetOrderDto>>() : null;
             }
         }
 
@@ -38,13 +33,8 @@ namespace Billing.WebApi.Client.Clients
         {
             using (var client = new HttpClient())
             {
-                Result<GetOrderDto> result = null;
-                HttpResponseMessage response = await client.GetAsync(BaseUrl + $"/api/orders/{orderId}");
-                if (response.IsSuccessStatusCode)
-                {
-                    result = await response.Content.ReadAsAsync<Result<GetOrderDto>>();
-                }
-                return result;
+                HttpResponseMessage response = await client.GetAsync($"{BaseUrl}/{apiUrl}/{orderId}");
+                return response.IsSuccessStatusCode ? await response.Content.ReadAsAsync<Result<GetOrderDto>>() : null;
             }
         }
 
@@ -52,13 +42,8 @@ namespace Billing.WebApi.Client.Clients
         {
             using (var client = new HttpClient())
             {
-                Result<List<GetOrderDto>> result = null;
-                HttpResponseMessage response = await client.GetAsync(BaseUrl + "/api/orders");
-                if (response.IsSuccessStatusCode)
-                {
-                    result = await response.Content.ReadAsAsync<Result<List<GetOrderDto>>>();
-                }
-                return result;
+                HttpResponseMessage response = await client.GetAsync($"{BaseUrl}/{apiUrl}");
+                return response.IsSuccessStatusCode ? await response.Content.ReadAsAsync<Result<List<GetOrderDto>>>() : null;
             }
         }
 
@@ -68,14 +53,8 @@ namespace Billing.WebApi.Client.Clients
             {
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                Result<GetOrderDto> result = null;
-                HttpResponseMessage response = await client.PutAsJsonAsync(BaseUrl + "/api/orders", orderToUpdate);
-                if (response.IsSuccessStatusCode)
-                {
-                    result = await response.Content.ReadAsAsync<Result<GetOrderDto>>();
-                }
-                return result;
+                HttpResponseMessage response = await client.PutAsJsonAsync($"{BaseUrl}/{apiUrl}", orderToUpdate);
+                return response.IsSuccessStatusCode ? await response.Content.ReadAsAsync<Result<GetOrderDto>>() : null;
             }
         }
 
@@ -83,13 +62,8 @@ namespace Billing.WebApi.Client.Clients
         {
             using (var client = new HttpClient())
             {
-                Result<GetOrderDto> result = null;
-                HttpResponseMessage response = await client.DeleteAsync(BaseUrl + $"/api/orders/{orderId}");
-                if (response.IsSuccessStatusCode)
-                {
-                    result = await response.Content.ReadAsAsync<Result<GetOrderDto>>();
-                }
-                return result;
+                HttpResponseMessage response = await client.DeleteAsync($"{BaseUrl}/{apiUrl}/{orderId}");
+                return response.IsSuccessStatusCode ? await response.Content.ReadAsAsync<Result<GetOrderDto>>() : null;
             }
         }
     }

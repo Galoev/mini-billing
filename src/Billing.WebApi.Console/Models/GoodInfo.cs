@@ -3,7 +3,7 @@ using System;
 
 namespace Billing.WebApi.Console.Models
 {
-    public class InfoGood
+    public class GoodInfo
     {
         public Guid Id { get; set; }
         public decimal UnitPrice { get; set; }

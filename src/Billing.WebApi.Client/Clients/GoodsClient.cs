@@ -11,6 +11,7 @@ namespace Billing.WebApi.Client.Clients
     public class GoodsClient
     {
         public string BaseUrl { get; }
+        private static readonly string apiUrl = "api/goods";
 
         public GoodsClient(string baseUrl)
         {
@@ -23,14 +24,8 @@ namespace Billing.WebApi.Client.Clients
             {
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                Result<GetGoodDto> result = null;
-                HttpResponseMessage response = await client.PostAsJsonAsync(BaseUrl + "/api/goods", goodToCreate);
-                if (response.IsSuccessStatusCode)
-                {
-                    result = await response.Content.ReadAsAsync<Result<GetGoodDto>>();
-                }
-                return result;
+                HttpResponseMessage response = await client.PostAsJsonAsync($"{BaseUrl}/{apiUrl}", goodToCreate);
+                return response.IsSuccessStatusCode ? await response.Content.ReadAsAsync<Result<GetGoodDto>>() : null;
             }
         }
 
@@ -38,13 +33,8 @@ namespace Billing.WebApi.Client.Clients
         {
             using (var client = new HttpClient())
             {
-                Result<GetGoodDto> result = null;
-                HttpResponseMessage response = await client.GetAsync(BaseUrl + $"/api/goods/{goodId}");
-                if (response.IsSuccessStatusCode)
-                {
-                    result = await response.Content.ReadAsAsync<Result<GetGoodDto>>();
-                }
-                return result;
+                HttpResponseMessage response = await client.GetAsync($"{BaseUrl}/{apiUrl}/{goodId}");
+                return response.IsSuccessStatusCode ? await response.Content.ReadAsAsync<Result<GetGoodDto>>() : null;
             }
         }
 
@@ -52,13 +42,8 @@ namespace Billing.WebApi.Client.Clients
         {
             using (var client = new HttpClient())
             {
-                Result<List<GetGoodDto>> result = null;
-                HttpResponseMessage response = await client.GetAsync(BaseUrl + "/api/goods");
-                if (response.IsSuccessStatusCode)
-                {
-                    result = await response.Content.ReadAsAsync<Result<List<GetGoodDto>>>();
-                }
-                return result;
+                HttpResponseMessage response = await client.GetAsync($"{BaseUrl}/{apiUrl}");
+                return response.IsSuccessStatusCode ? await response.Content.ReadAsAsync<Result<List<GetGoodDto>>>() : null;
             }
         }
 
@@ -68,14 +53,8 @@ namespace Billing.WebApi.Client.Clients
             {
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                Result<GetGoodDto> result = null;
-                HttpResponseMessage response = await client.PutAsJsonAsync(BaseUrl + "/api/goods", goodToUpdate);
-                if (response.IsSuccessStatusCode)
-                {
-                    result = await response.Content.ReadAsAsync<Result<GetGoodDto>>();
-                }
-                return result;
+                HttpResponseMessage response = await client.PutAsJsonAsync($"{BaseUrl}/{apiUrl}", goodToUpdate);
+                return response.IsSuccessStatusCode ? await response.Content.ReadAsAsync<Result<GetGoodDto>>() : null;
             }
         }
 
@@ -83,13 +62,8 @@ namespace Billing.WebApi.Client.Clients
         {
             using (var client = new HttpClient())
             {
-                Result<GetGoodDto> result = null;
-                HttpResponseMessage response = await client.DeleteAsync(BaseUrl + $"/api/goods/{goodId}");
-                if (response.IsSuccessStatusCode)
-                {
-                    result = await response.Content.ReadAsAsync<Result<GetGoodDto>>();
-                }
-                return result;
+                HttpResponseMessage response = await client.DeleteAsync($"{BaseUrl}/{apiUrl}/{goodId}");
+                return response.IsSuccessStatusCode ? await response.Content.ReadAsAsync<Result<GetGoodDto>>() : null;
             }
         }
     }

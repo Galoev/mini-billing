@@ -6,60 +6,45 @@ namespace Billing.WebApi.Console.Converters
 {
     public class GoodConverter
     {
-        public static Good FromDto(GetGoodDto goodDto)
+        public static Good FromDto(GetGoodDto goodDto) => new Good
         {
-            return new Good
-            {
-                Id = goodDto.Id,
-                UnitPrice = goodDto.UnitPrice,
-                QuantityType = goodDto.QuantityType,
-                Description = goodDto.Description ?? "",
-                Components = goodDto.Components
+            Id = goodDto.Id,
+            UnitPrice = goodDto.UnitPrice,
+            QuantityType = goodDto.QuantityType,
+            Description = goodDto.Description ?? string.Empty,
+            Components = goodDto.Components
                     .Select(c => ComponentConverter.FromDto(c))
-                    .ToList() 
-            };
-        }
+                    .ToList()
+        };
 
-        public static CreateGoodDto ToDto(Good good)
+        public static CreateGoodDto ToDto(Good good) => new CreateGoodDto
         {
-            return new CreateGoodDto
-            {
-                UnitPrice = good.UnitPrice,
-                QuantityType = good.QuantityType,
-                Description = string.IsNullOrEmpty(good.Description)
+            UnitPrice = good.UnitPrice,
+            QuantityType = good.QuantityType,
+            Description = string.IsNullOrEmpty(good.Description)
                     ? null
                     : good.Description,
-                Components = good.Components.Select(c => ComponentConverter.ToDto(c)).ToList()
-            };
-        }
+            Components = good.Components.Select(c => ComponentConverter.ToDto(c)).ToList()
+        };
 
-        public static OrderGood FromDto(OrderGoodDto orderGoodDto)
+        public static OrderGood FromDto(OrderGoodDto orderGoodDto) => new OrderGood
         {
-            return new OrderGood
-            {
-                Id = orderGoodDto.Id,
-                Quantity = orderGoodDto.Quantity
-            };
-        }
+            Id = orderGoodDto.Id,
+            Quantity = orderGoodDto.Quantity
+        };
 
-        public static OrderGoodDto ToDto(OrderGood orderGood)
+        public static OrderGoodDto ToDto(OrderGood orderGood) => new OrderGoodDto
         {
-            return new OrderGoodDto
-            {
-                Id = orderGood.Id,
-                Quantity = orderGood.Quantity
-            };
-        }
+            Id = orderGood.Id,
+            Quantity = orderGood.Quantity
+        };
 
-        public static InfoGood InfoGoodFromDto(GetGoodDto goodDto) 
+        public static GoodInfo InfoGoodFromDto(GetGoodDto goodDto) => new GoodInfo
         {
-            return new InfoGood
-            {
-                Id = goodDto.Id,
-                UnitPrice = goodDto.UnitPrice,
-                QuantityType = goodDto.QuantityType,
-                Description = goodDto.Description ?? ""
-            };
-        }
+            Id = goodDto.Id,
+            UnitPrice = goodDto.UnitPrice,
+            QuantityType = goodDto.QuantityType,
+            Description = goodDto.Description ?? string.Empty
+        };
     }
 }

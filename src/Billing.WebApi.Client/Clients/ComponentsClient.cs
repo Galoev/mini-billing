@@ -10,6 +10,7 @@ namespace Billing.WebApi.Client.Clients
     public class ComponentsClient
     {
         public string BaseUrl { get; }
+        private static readonly string apiUrl = "api/components";
 
         public ComponentsClient(string baseUrl)
         {
@@ -22,14 +23,8 @@ namespace Billing.WebApi.Client.Clients
             {
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                Result<GetComponentDto> result = null;
-                HttpResponseMessage response = await client.PostAsJsonAsync(BaseUrl + "/api/components", componentToCreate);
-                if (response.IsSuccessStatusCode)
-                {
-                    result = await response.Content.ReadAsAsync<Result<GetComponentDto>>();
-                }
-                return result;
+                HttpResponseMessage response = await client.PostAsJsonAsync($"{BaseUrl}/{apiUrl}", componentToCreate);
+                return response.IsSuccessStatusCode ? await response.Content.ReadAsAsync<Result<GetComponentDto>>() : null;
             }
         }
 
@@ -37,13 +32,8 @@ namespace Billing.WebApi.Client.Clients
         {
             using (var client = new HttpClient())
             {
-                Result<GetComponentDto> result = null;
-                HttpResponseMessage response = await client.GetAsync(BaseUrl + $"/api/components/{componentId}");
-                if (response.IsSuccessStatusCode)
-                {
-                    result = await response.Content.ReadAsAsync<Result<GetComponentDto>>();
-                }
-                return result;
+                HttpResponseMessage response = await client.GetAsync($"{BaseUrl}/{apiUrl}/{componentId}");
+                return response.IsSuccessStatusCode ? await response.Content.ReadAsAsync<Result<GetComponentDto>>() : null;
             }
         }
 
@@ -51,13 +41,8 @@ namespace Billing.WebApi.Client.Clients
         {
             using (var client = new HttpClient())
             {
-                Result<GetComponentDto> result = null;
-                HttpResponseMessage response = await client.DeleteAsync(BaseUrl + $"/api/components/{componentId}");
-                if (response.IsSuccessStatusCode)
-                {
-                    result = await response.Content.ReadAsAsync<Result<GetComponentDto>>();
-                }
-                return result;
+                HttpResponseMessage response = await client.DeleteAsync($"{BaseUrl}/{apiUrl}/{componentId}");
+                return response.IsSuccessStatusCode ? await response.Content.ReadAsAsync<Result<GetComponentDto>>() : null;
             }
         }
     }
