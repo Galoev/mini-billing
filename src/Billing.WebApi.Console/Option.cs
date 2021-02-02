@@ -3,13 +3,13 @@ namespace Billing.WebApi.Console
 {
     public class Option
     {
-        public string name;
-        public Action callback;
+        public string Name { get; }
+        public Action Callback { get; }
 
         public Option(string name, Action callback)
         {
-            this.name = name;
-            this.callback = callback;
+            Name = name;
+            Callback = callback;
         }
     }
 }

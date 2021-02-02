@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Billing.WebApi.Client.Models;
 using Billing.WebApi.Console.Models;
 
@@ -21,8 +20,9 @@ namespace Billing.WebApi.Console
             InitMainMenu();
             while (!endProgram)
             {
-                menu.Print();
-                int choose = console.ReadInt("Choose an option:", min: 1, max: menu.OptionsCount());
+                console.PrintMenu(menu);
+                int choose = console.ReadNumberWithHint("Choose an option:", 
+                    minBound: 1, maxBound: menu.Options.Count);
                 menu.ExecuteOption(choose - 1);
             }
         }
@@ -30,88 +30,57 @@ namespace Billing.WebApi.Console
         static void InitMainMenu()
         {
             menu = new Menu();
-            menu.Add("Display all orders", DisplayOrders);
+            menu.Add("Display all orders", () => 
+            {
+                var result = searchBilling.GetInfoOrders().Result;
+                console.PrintTable(result);
+            });
             menu.Add("Create order", CreateOrder);
             menu.Add("Exit", Exit);
         }
 
-        static void DisplayOrders()
-        {
-            console.PrintTable(searchBilling.GetInfoOrders().Result);
-        }
-
         static void CreateOrder()
         {
-            List<Customer> customers = searchBilling.GetCustomers().Result;
-            Customer customer = null;
+            List<Customer> availableCustomers = searchBilling.GetCustomers().Result;
+            console.PrintTable(availableCustomers);
+            Customer chosenCustomer = null;
 
-            console.PrintTable(customers);
-            var customerMenu = new Menu();
-            customerMenu.Add("Chose customer", () => customer = customers[console.ReadInt("Enter customer number:", min: 1, max: customers.Count) - 1]);
-            customerMenu.Add("Create customer", () => customer = CreateCustomer());
-            customerMenu.Print();
-            int choose = console.ReadInt("Choose an option:", min: 1, max: customerMenu.OptionsCount());
-            customerMenu.ExecuteOption(choose - 1);
+            var customerChoosingMenu = new Menu();
+            customerChoosingMenu.Add("Choose customer", () =>
+            {
+                var customerNumber = console.ReadNumberWithHint("Enter customer number:",
+                    minBound: 1, maxBound: availableCustomers.Count);
+                chosenCustomer = availableCustomers[customerNumber - 1];
+            });
+            customerChoosingMenu.Add("Create customer", () => chosenCustomer = CreateCustomer());
 
-            var goodsReady = false;
+            console.PrintMenu(customerChoosingMenu);
+
+            int chosenOption = console.ReadNumberWithHint("Choose an option: ", 
+                minBound: 1, maxBound: customerChoosingMenu.Options.Count);
+            customerChoosingMenu.ExecuteOption(chosenOption - 1);
+
             List<GoodInfo> infoGoods = searchBilling.GetInfoGoods().Result;
-            List<OrderGood> orderGoods = new List<OrderGood>();
-            while (!goodsReady)
-            {
-                OrderGood orderGood = null;
-                int quantity = -1;
-                console.PrintTable(infoGoods);
-                var goodsMenu = new Menu();
-                goodsMenu.Add("Choose good", () => {
-                    orderGood = new OrderGood
-                    {
-                        Id = infoGoods[console.ReadInt("Enter good number:", min: 1, max: infoGoods.Count) - 1].Id
-                    }; 
-                    quantity = console.ReadInt("Enter the quantity of goods", min: 1, max: int.MaxValue);
-                    orderGood.Quantity = quantity;
-                    orderGoods.Add(orderGood);
-                });
-                goodsMenu.Add("Done", () => goodsReady = true);
-                goodsMenu.Print();
 
-                choose = console.ReadInt("Choose an option:", min: 1, max: goodsMenu.OptionsCount());
-                goodsMenu.ExecuteOption(choose - 1);
-            }
-
-            System.Console.WriteLine("Enter the order date:");
-            DateTime date = console.ReadDate();
-
-            CreateOrder order = new CreateOrder
-            {
-                CustomerId = customer.Id,
-                CreationDate = date,
-                Goods = orderGoods,
-                PaymentStatus = PaymentStatus.Unpaid,
-                DeliveryStatus = DeliveryStatus.DeliveryWaiting
-            };
-
+            CreateOrder order = console.ReadOrder(infoGoods);
+            order.CustomerId = chosenCustomer.Id;
+            order.PaymentStatus = PaymentStatus.Unpaid;
+            order.DeliveryStatus = DeliveryStatus.DeliveryWaiting;
+            
             var createdOrder = editBilling.CreateOrder(order).Result;
-            System.Console.WriteLine("Order successfully created");
+            console.PrintInfoMessage("Order successfully created!");
+        }
+
+        static Customer CreateCustomer()
+        {
+            var customer = console.ReadCustomer();
+            customer = editBilling.CreateCustomer(customer).Result;
+            return customer;
         }
 
         static void Exit()
         {
             endProgram = true;
-        }
-
-        static Customer CreateCustomer()
-        {
-            System.Console.WriteLine("Enter customer name: ");
-            var name = System.Console.ReadLine();
-            System.Console.WriteLine("Enter the customer's phone number: ");
-            var phone = System.Console.ReadLine();
-            System.Console.WriteLine("Enter customer information:");
-            var info = System.Console.ReadLine();
-            var customer = new Customer { Name = name, Phone = phone, AdditionalInfo = info };
-
-            customer = editBilling.CreateCustomer(customer).Result;
-
-            return customer;
         }
     }
 }

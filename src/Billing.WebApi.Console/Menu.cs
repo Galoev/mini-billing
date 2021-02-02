@@ -5,19 +5,11 @@ namespace Billing.WebApi.Console
 {
     public class Menu
     {
-        private IList<Option> options;
+        public IList<Option> Options { get; }
 
         public Menu()
         {
-            options = new List<Option>();
-        }
-
-        public void Print()
-        {
-            for (int i = 0; i < options.Count; i++)
-            {
-                System.Console.WriteLine($"{i + 1}. {options[i].name}");
-            }
+            Options = new List<Option>();
         }
 
         public Menu Add(string option, Action callback)
@@ -28,18 +20,13 @@ namespace Billing.WebApi.Console
 
         public Menu Add(Option option)
         {
-            options.Add(option);
+            Options.Add(option);
             return this;
         }
 
         public void ExecuteOption(int i)
         {
-            options[i].callback();
-        }
-
-        public int OptionsCount()
-        {
-            return options.Count;
+            Options[i].Callback();
         }
     }
 }
