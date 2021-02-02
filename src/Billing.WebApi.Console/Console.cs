@@ -32,9 +32,14 @@ namespace Billing.WebApi.Console
                 table.AddRow(row.ToArray());
             }
             if (table.Rows.Count > 0)
+            {
                 System.Console.Write(table.ToString());
-            else
+                System.Console.WriteLine();
+            } else
+            {
                 PrintInfoMessage("Table is empty!");
+                System.Console.WriteLine();
+            }
         }
 
         public void PrintMenu(Menu menu)
@@ -43,6 +48,7 @@ namespace Billing.WebApi.Console
             {
                 System.Console.WriteLine($"{i + 1}. {menu.Options[i].Name}");
             }
+            System.Console.WriteLine();
         }
 
         public void PrintErrorMessage(string errorMessage)
@@ -66,8 +72,10 @@ namespace Billing.WebApi.Console
             while (!UserInputValidator.IsValidDateInFormat(input, dateFormat, out date))
             {
                 System.Console.WriteLine($"Please enter the order date in this format {dateFormat}!");
+                System.Console.WriteLine(hint);
                 input = System.Console.ReadLine();
             }
+            System.Console.WriteLine();
 
             return date;
         }
@@ -82,8 +90,10 @@ namespace Billing.WebApi.Console
             while (!UserInputValidator.IsValidNumber(input, minBound, maxBound, out number))
             {
                 System.Console.WriteLine($"Please enter a number between {minBound} and {maxBound}!");
+                System.Console.WriteLine(hint);
                 input = System.Console.ReadLine();
             }
+            System.Console.WriteLine();
 
             return number;
         }
@@ -112,6 +122,7 @@ namespace Billing.WebApi.Console
             {
                 phone = ReadLineWithHint($"Please enter a valid phone number in this format {format}!");
             }
+            System.Console.WriteLine();
 
             return phone;
         } 
