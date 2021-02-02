@@ -11,7 +11,7 @@ namespace Billing.WebApi.Console
         void PrintErrorMessage(string errorMessage);
         void PrintInfoMessage(string message);
 
-        int ReadNumberWithHint(string hint, int min, int max);
+        int ReadNumberWithHint(string hint, int minBound, int maxBound);
         DateTime ReadDateWithHint(string hint);
         string ReadLineWithHint(string hint, bool isRequired);
         string ReadPhoneNumberWithHint(string hint);

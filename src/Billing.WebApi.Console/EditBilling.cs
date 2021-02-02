@@ -1,11 +1,12 @@
 ﻿using System.Threading.Tasks;
 using Billing.WebApi.Client.Clients;
+using Billing.WebApi.Client.Utility;
 using Billing.WebApi.Console.Converters;
 using Billing.WebApi.Console.Models;
 
 namespace Billing.WebApi.Console
 {
-    public class EditBilling: IEditBilling
+    public class EditBilling : IEditBilling
     {
         private readonly CustomersClient customersClient;
         private readonly OrdersClient ordersClient;
@@ -17,24 +18,30 @@ namespace Billing.WebApi.Console
             customersClient = new CustomersClient(serviceAddress);
             ordersClient = new OrdersClient(serviceAddress);
         }
-        public async Task<Customer> CreateCustomer(Customer customer)
+        public async Task<Result<Customer>> CreateCustomer(Customer customer)
         {
             var resultFromClient = await customersClient.CreateCustomerAsync(CustomerConverter.ToDto(customer));
-            if (resultFromClient.IsSuccess)
+            return new Result<Customer>
             {
-                return CustomerConverter.FromDto(resultFromClient.Value);
-            }
-            return null;
+                IsSuccess = resultFromClient.IsSuccess,
+                Message = resultFromClient.Message,
+                Value = resultFromClient.IsSuccess
+                    ? CustomerConverter.FromDto(resultFromClient.Value)
+                    : null
+            };
         }
 
-        public async Task<Order> CreateOrder(CreateOrder order)
+        public async Task<Result<Order>> CreateOrder(CreateOrder order)
         {
             var resultFromClient = await ordersClient.CreateOrderAsync(OrderConverter.ToDto(order));
-            if (resultFromClient.IsSuccess)
+            return new Result<Order>
             {
-                return OrderConverter.FromDto(resultFromClient.Value);
-            }
-            return null;
+                IsSuccess = resultFromClient.IsSuccess,
+                Message = resultFromClient.Message,
+                Value = resultFromClient.IsSuccess
+                    ? OrderConverter.FromDto(resultFromClient.Value)
+                    : null
+            };
         }
     }
 }

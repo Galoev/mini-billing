@@ -2,12 +2,13 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Billing.WebApi.Client.Clients;
+using Billing.WebApi.Client.Utility;
 using Billing.WebApi.Console.Converters;
 using Billing.WebApi.Console.Models;
 
 namespace Billing.WebApi.Console
 {
-    public class SearchBilling: ISearchBilling
+    public class SearchBilling : ISearchBilling
     {
         private readonly CustomersClient customersClient;
         private readonly OrdersClient ordersClient;
@@ -22,54 +23,69 @@ namespace Billing.WebApi.Console
             goodsClient = new GoodsClient(serviceAddress);
         }
 
-        public async Task<List<Customer>> GetCustomers()
+        public async Task<Result<List<Customer>>> GetCustomers()
         {
             var resultFromClient = await customersClient.GetCustomersAsync();
-            if (resultFromClient.IsSuccess)
+            return new Result<List<Customer>>
             {
-                return resultFromClient.Value.Select(c => CustomerConverter.FromDto(c)).ToList();
-            }
-            return Enumerable.Empty<Customer>().ToList();
+                    IsSuccess = resultFromClient.IsSuccess,
+                    Message = resultFromClient.Message,
+                    Value = resultFromClient.IsSuccess 
+                        ? resultFromClient.Value.Select(c => CustomerConverter.FromDto(c)).ToList()
+                        : null
+            };
         }
 
-        public async Task<List<Good>> GetGoods()
+        public async Task<Result<List<Good>>> GetGoods()
         {
             var resultFromClient = await goodsClient.GetGoodsAsync();
-            if (resultFromClient.IsSuccess)
+            return new Result<List<Good>>
             {
-                return resultFromClient.Value.Select(g => GoodConverter.FromDto(g)).ToList();
-            }
-            return Enumerable.Empty<Good>().ToList();
+                IsSuccess = resultFromClient.IsSuccess,
+                Message = resultFromClient.Message,
+                Value = resultFromClient.IsSuccess
+                    ? resultFromClient.Value.Select(g => GoodConverter.FromDto(g)).ToList()
+                    : null
+            };
         }
 
-        public async Task<List<GoodInfo>> GetInfoGoods()
+        public async Task<Result<List<GoodInfo>>> GetGoodsInfo()
         {
             var resultFromClient = await goodsClient.GetGoodsAsync();
-            if (resultFromClient.IsSuccess)
+            return new Result<List<GoodInfo>>
             {
-                return resultFromClient.Value.Select(g => GoodConverter.InfoGoodFromDto(g)).ToList();
-            }
-            return Enumerable.Empty<GoodInfo>().ToList();
+                IsSuccess = resultFromClient.IsSuccess,
+                Message = resultFromClient.Message,
+                Value = resultFromClient.IsSuccess
+                    ? resultFromClient.Value.Select(g => GoodConverter.InfoGoodFromDto(g)).ToList()
+                    : null
+            };
         }
 
-        public async Task<List<Order>> GetOrders()
+        public async Task<Result<List<Order>>> GetOrders()
         {
             var resultFromClient = await ordersClient.GetOrdersAsync();
-            if (resultFromClient.IsSuccess)
+            return new Result<List<Order>>
             {
-                return resultFromClient.Value.Select(o => OrderConverter.FromDto(o)).ToList();
-            }
-            return Enumerable.Empty<Order>().ToList();
+                IsSuccess = resultFromClient.IsSuccess,
+                Message = resultFromClient.Message,
+                Value = resultFromClient.IsSuccess
+                    ? resultFromClient.Value.Select(o => OrderConverter.FromDto(o)).ToList()
+                    : null
+            };
         }
 
-        public async Task<List<OrderInfo>> GetInfoOrders()
+        public async Task<Result<List<OrderInfo>>> GetOrdersInfo()
         {
             var resultFromClient = await ordersClient.GetOrdersAsync();
-            if (resultFromClient.IsSuccess)
+            return new Result<List<OrderInfo>>
             {
-                return resultFromClient.Value.Select(o => OrderConverter.InfoOrderFromDto(o)).ToList();
-            }
-            return Enumerable.Empty<OrderInfo>().ToList();
+                IsSuccess = resultFromClient.IsSuccess,
+                Message = resultFromClient.Message,
+                Value = resultFromClient.IsSuccess
+                    ? resultFromClient.Value.Select(o => OrderConverter.InfoOrderFromDto(o)).ToList()
+                    : null
+            };
         }
     }
 }

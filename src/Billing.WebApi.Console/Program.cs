@@ -7,9 +7,9 @@ namespace Billing.WebApi.Console
     class Program
     {
         private static Menu menu;
-        private static Console console;
-        private static SearchBilling searchBilling;
-        private static EditBilling editBilling;
+        private static IConsole console;
+        private static ISearchBilling searchBilling;
+        private static IEditBilling editBilling;
         private static bool endProgram = false;
 
         static void Main(string[] args)
@@ -32,8 +32,11 @@ namespace Billing.WebApi.Console
             menu = new Menu();
             menu.Add("Display all orders", () => 
             {
-                var result = searchBilling.GetInfoOrders().Result;
-                console.PrintTable(result);
+                var result = searchBilling.GetOrdersInfo().Result;
+                if (result.IsSuccess)
+                    console.PrintTable(result.Value);
+                else
+                    console.PrintErrorMessage(result.Message);
             });
             menu.Add("Create order", CreateOrder);
             menu.Add("Exit", Exit);
@@ -41,7 +44,17 @@ namespace Billing.WebApi.Console
 
         static void CreateOrder()
         {
-            List<Customer> availableCustomers = searchBilling.GetCustomers().Result;
+            var resultWithListOfCustomers = searchBilling.GetCustomers().Result;
+            List<Customer> availableCustomers;
+            if (resultWithListOfCustomers.IsSuccess)
+            {
+                availableCustomers = resultWithListOfCustomers.Value;
+            } else
+            {
+                console.PrintErrorMessage(resultWithListOfCustomers.Message);
+                return;
+            }
+                
             console.PrintTable(availableCustomers);
             Customer chosenCustomer = null;
 
@@ -54,27 +67,57 @@ namespace Billing.WebApi.Console
             });
             customerChoosingMenu.Add("Create customer", () => chosenCustomer = CreateCustomer());
 
+            bool canceled = false;
+            customerChoosingMenu.Add("Cancel", () => canceled = true);
+
             console.PrintMenu(customerChoosingMenu);
 
-            int chosenOption = console.ReadNumberWithHint("Choose an option: ", 
-                minBound: 1, maxBound: customerChoosingMenu.Options.Count);
-            customerChoosingMenu.ExecuteOption(chosenOption - 1);
+            int chosenOption;
+            while (chosenCustomer is null)
+            {
+                chosenOption = console.ReadNumberWithHint("Choose an option: ",
+                    minBound: 1, maxBound: customerChoosingMenu.Options.Count);
+                customerChoosingMenu.ExecuteOption(chosenOption - 1);
+                if (canceled)
+                    return;
+            }
 
-            List<GoodInfo> infoGoods = searchBilling.GetInfoGoods().Result;
+            var resultWithGoodsInfo = searchBilling.GetGoodsInfo().Result;
+            List<GoodInfo> goodsInfo;
+            if (resultWithGoodsInfo.IsSuccess)
+            {
+                goodsInfo = resultWithGoodsInfo.Value;
+            } else
+            {
+                console.PrintErrorMessage(resultWithGoodsInfo.Message);
+                return;
+            }
 
-            CreateOrder order = console.ReadOrder(infoGoods);
+            CreateOrder order = console.ReadOrder(goodsInfo);
             order.CustomerId = chosenCustomer.Id;
             order.PaymentStatus = PaymentStatus.Unpaid;
             order.DeliveryStatus = DeliveryStatus.DeliveryWaiting;
             
-            var createdOrder = editBilling.CreateOrder(order).Result;
-            console.PrintInfoMessage("Order successfully created!");
+            var resultWithCreatedOrder = editBilling.CreateOrder(order).Result;
+            if (resultWithCreatedOrder.IsSuccess)
+                console.PrintInfoMessage(resultWithCreatedOrder.Message);
+            else
+                console.PrintErrorMessage(resultWithCreatedOrder.Message);
         }
 
         static Customer CreateCustomer()
         {
             var customer = console.ReadCustomer();
-            customer = editBilling.CreateCustomer(customer).Result;
+            var resultWithCreatedCustomer = editBilling.CreateCustomer(customer).Result;
+            if (resultWithCreatedCustomer.IsSuccess)
+            {
+                customer = resultWithCreatedCustomer.Value;
+                console.PrintInfoMessage(resultWithCreatedCustomer.Message);
+            } else
+            {
+                console.PrintErrorMessage(resultWithCreatedCustomer.Message);
+                customer = null;
+            }
             return customer;
         }
 

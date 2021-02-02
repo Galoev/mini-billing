@@ -31,8 +31,10 @@ namespace Billing.WebApi.Console
                 row.Insert(0, index);
                 table.AddRow(row.ToArray());
             }
-
-            System.Console.Write(table.ToString());
+            if (table.Rows.Count > 0)
+                System.Console.Write(table.ToString());
+            else
+                PrintInfoMessage("Table is empty!");
         }
 
         public void PrintMenu(Menu menu)
