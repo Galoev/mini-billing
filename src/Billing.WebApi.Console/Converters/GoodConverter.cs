@@ -17,7 +17,7 @@ namespace Billing.WebApi.Console.Converters
                     .ToList()
         };
 
-        public static CreateGoodDto ToDto(Good good) => new CreateGoodDto
+        public static CreateGoodDto ToDto(CreateGood good) => new CreateGoodDto
         {
             UnitPrice = good.UnitPrice,
             QuantityType = good.QuantityType,

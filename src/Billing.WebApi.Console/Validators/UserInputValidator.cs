@@ -31,6 +31,9 @@ namespace Billing.WebApi.Console.Validators
             }
         }
 
+        public static bool IsValidPrice(string value, out decimal price) =>
+            decimal.TryParse(value, out price) && 0.0M <= price;
+
         public static bool IsValidEmail(string email)
         {
             if (string.IsNullOrWhiteSpace(email))

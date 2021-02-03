@@ -39,6 +39,7 @@ namespace Billing.WebApi.Console
                     console.PrintErrorMessage(result.Message);
             });
             menu.Add("Create order", CreateOrder);
+            menu.Add("Create good", CreateGood);
             menu.Add("Exit", Exit);
         }
 
@@ -105,7 +106,30 @@ namespace Billing.WebApi.Console
                 console.PrintErrorMessage(resultWithCreatedOrder.Message);
         }
 
-        static Customer CreateCustomer()
+        static void CreateGood()
+        {
+            var resultWithComponentsInfo = searchBilling.GetComponents().Result;
+            List<Component> componentsInfo;
+            if (resultWithComponentsInfo.IsSuccess)
+            {
+                componentsInfo = resultWithComponentsInfo.Value;
+            }
+            else
+            {
+                console.PrintErrorMessage(resultWithComponentsInfo.Message);
+                return;
+            }
+
+            CreateGood good = console.ReadGood(componentsInfo);
+            
+            var resultWithCreatedOrder = editBilling.CreateGood(good).Result;
+            if (resultWithCreatedOrder.IsSuccess)
+                console.PrintInfoMessage(resultWithCreatedOrder.Message);
+            else
+                console.PrintErrorMessage(resultWithCreatedOrder.Message);
+        }
+
+        private static Customer CreateCustomer()
         {
             var customer = console.ReadCustomer();
             var resultWithCreatedCustomer = editBilling.CreateCustomer(customer).Result;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using BetterConsoleTables;
+using Billing.WebApi.Client.Models;
 using Billing.WebApi.Console.Models;
 using Billing.WebApi.Console.Validators;
 
@@ -80,6 +81,24 @@ namespace Billing.WebApi.Console
             return date;
         }
 
+        public decimal ReadPriceWithHint(string hint)
+        {
+            System.Console.WriteLine(hint);
+
+            string input = System.Console.ReadLine();
+            decimal price;
+
+            while (!UserInputValidator.IsValidPrice(input, out price))
+            {
+                System.Console.WriteLine($"Please enter a non-negative decimal!");
+                System.Console.WriteLine(hint);
+                input = System.Console.ReadLine();
+            }
+            System.Console.WriteLine();
+
+            return price;
+        }
+
         public int ReadNumberWithHint(string hint, int minBound, int maxBound)
         {
             System.Console.WriteLine(hint);
@@ -142,7 +161,7 @@ namespace Billing.WebApi.Console
 
         public CreateOrder ReadOrder(List<GoodInfo> goodsInfo)
         {
-            List<OrderGood> orderGoods = new List<OrderGood>();
+            var orderGoods = new List<OrderGood>();
 
             OrderGood chosenGood;
             int chosenGoodQuantity;
@@ -179,6 +198,53 @@ namespace Billing.WebApi.Console
             {
                 CreationDate = date,
                 Goods = orderGoods
+            };
+        }
+
+        public CreateGood ReadGood(List<Component> componentInfo)
+        {
+            var goodComponents = new List<GoodComponent>();
+
+            GoodComponent chosenComponent;
+            int chosenComponentQuantity;
+
+            var componentsMenu = new Menu();
+            componentsMenu.Add("Choose component", () => {
+                chosenComponent = new GoodComponent
+                {
+                    Id = componentInfo[ReadNumberWithHint("Enter a component number: ",
+                        minBound: 1, maxBound: componentInfo.Count) - 1].Id
+                };
+                chosenComponentQuantity = ReadNumberWithHint("Enter the quantity of the component: ",
+                    minBound: 1, maxBound: int.MaxValue);
+                chosenComponent.Quantity = chosenComponentQuantity;
+                goodComponents.Add(chosenComponent);
+            });
+
+            var goodsReady = false;
+            componentsMenu.Add("Done", () => goodsReady = true);
+
+            while (!goodsReady)
+            {
+                PrintTable(componentInfo);
+                PrintMenu(componentsMenu);
+
+                var chosenOption = ReadNumberWithHint("Choose an option:",
+                    minBound: 1, maxBound: componentsMenu.Options.Count);
+                componentsMenu.ExecuteOption(chosenOption - 1);
+            }
+
+            decimal unitPrice = ReadPriceWithHint("Enter an unit price of the good: ");
+            string description = ReadLineWithHint("Enter a description of the good: ");
+            int quantityTypeNumber = ReadNumberWithHint("Enter a number of quantity type, where kilogram - 1, litre - 2, piece - 3 ", 
+                1, Enum.GetNames(typeof(QuantityType)).Length);
+
+            return new CreateGood
+            {
+                UnitPrice = unitPrice,
+                QuantityType = (QuantityType) quantityTypeNumber,
+                Components = goodComponents,
+                Description = description
             };
         }
 

@@ -10,6 +10,7 @@ namespace Billing.WebApi.Console
         Task<Result<List<Good>>> GetGoods();
         Task<Result<List<Order>>> GetOrders();
         Task<Result<List<Customer>>> GetCustomers();
+        Task<Result<List<Component>>> GetComponents();
 
         Task<Result<List<OrderInfo>>> GetOrdersInfo();
         Task<Result<List<GoodInfo>>> GetGoodsInfo();

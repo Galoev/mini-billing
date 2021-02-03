@@ -13,6 +13,7 @@ namespace Billing.WebApi.Console
         private readonly CustomersClient customersClient;
         private readonly OrdersClient ordersClient;
         private readonly GoodsClient goodsClient;
+        private readonly ComponentsClient componentsClient;
 
         private static readonly string serviceAddress = "https://localhost:44311";
 
@@ -21,6 +22,7 @@ namespace Billing.WebApi.Console
             customersClient = new CustomersClient(serviceAddress);
             ordersClient = new OrdersClient(serviceAddress);
             goodsClient = new GoodsClient(serviceAddress);
+            componentsClient = new ComponentsClient(serviceAddress);
         }
 
         public async Task<Result<List<Customer>>> GetCustomers()
@@ -33,6 +35,19 @@ namespace Billing.WebApi.Console
                     Value = resultFromClient.IsSuccess 
                         ? resultFromClient.Value.Select(c => CustomerConverter.FromDto(c)).ToList()
                         : null
+            };
+        }
+
+        public async Task<Result<List<Component>>> GetComponents()
+        {
+            var resultFromClient = await componentsClient.GetComponentsAsync();
+            return new Result<List<Component>>
+            {
+                IsSuccess = resultFromClient.IsSuccess,
+                Message = resultFromClient.Message,
+                Value = resultFromClient.IsSuccess
+                    ? resultFromClient.Value.Select(c => ComponentConverter.FromDto(c)).ToList()
+                    : null
             };
         }
 

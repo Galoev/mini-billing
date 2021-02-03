@@ -10,6 +10,7 @@ namespace Billing.WebApi.Console
     {
         private readonly CustomersClient customersClient;
         private readonly OrdersClient ordersClient;
+        private readonly GoodsClient goodsClient;
 
         private static readonly string serviceAddress = "https://localhost:44311";
 
@@ -17,6 +18,7 @@ namespace Billing.WebApi.Console
         {
             customersClient = new CustomersClient(serviceAddress);
             ordersClient = new OrdersClient(serviceAddress);
+            goodsClient = new GoodsClient(serviceAddress);
         }
         public async Task<Result<Customer>> CreateCustomer(Customer customer)
         {
@@ -40,6 +42,19 @@ namespace Billing.WebApi.Console
                 Message = resultFromClient.Message,
                 Value = resultFromClient.IsSuccess
                     ? OrderConverter.FromDto(resultFromClient.Value)
+                    : null
+            };
+        }
+
+        public async Task<Result<Good>> CreateGood(CreateGood good)
+        {
+            var resultFromClient = await goodsClient.CreateGoodAsync(GoodConverter.ToDto(good));
+            return new Result<Good>
+            {
+                IsSuccess = resultFromClient.IsSuccess,
+                Message = resultFromClient.Message,
+                Value = resultFromClient.IsSuccess
+                    ? GoodConverter.FromDto(resultFromClient.Value)
                     : null
             };
         }

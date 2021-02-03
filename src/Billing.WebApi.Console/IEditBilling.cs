@@ -8,5 +8,6 @@ namespace Billing.WebApi.Console
     {
         Task<Result<Customer>> CreateCustomer(Customer customer);
         Task<Result<Order>> CreateOrder(CreateOrder order);
+        Task<Result<Good>> CreateGood(CreateGood good);
     }
 }
