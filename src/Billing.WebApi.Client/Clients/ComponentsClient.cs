@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -34,6 +35,15 @@ namespace Billing.WebApi.Client.Clients
             {
                 HttpResponseMessage response = await client.GetAsync($"{BaseUrl}/{apiUrl}/{componentId}");
                 return response.IsSuccessStatusCode ? await response.Content.ReadAsAsync<Result<GetComponentDto>>() : null;
+            }
+        }
+
+        public async Task<Result<List<GetComponentDto>>> GetComponentsAsync()
+        {
+            using (var client = new HttpClient())
+            {
+                HttpResponseMessage response = await client.GetAsync($"{BaseUrl}/{apiUrl}");
+                return response.IsSuccessStatusCode ? await response.Content.ReadAsAsync<Result<List<GetComponentDto>>>() : null;
             }
         }
 
