@@ -123,7 +123,7 @@ namespace Billing.WebApi.Repositories
             return new Result<List<Customer>>
             {
                 IsSuccess = true,
-                Message = "List of customers",
+                Message = "List of customers successfully found!",
                 Value = listOfCustomers
             };
         }
