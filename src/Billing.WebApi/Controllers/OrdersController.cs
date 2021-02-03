@@ -70,9 +70,9 @@ namespace Billing.WebApi.Controllers
         }
 
         [HttpPut]
-        public ActionResult<Result<GetOrderDto>> Put([FromBody] CreateOrderDto orderDto)
+        public ActionResult<Result<GetOrderDto>> Put([FromBody] UpdateOrderDto orderDto)
         {
-            var resultFromRepository = ordersRepository.Update(orderConverter.FromCreateDto(orderDto));
+            var resultFromRepository = ordersRepository.Update(orderConverter.FromUpdateDto(orderDto));
             return new Result<GetOrderDto>
             {
                 IsSuccess = resultFromRepository.IsSuccess,

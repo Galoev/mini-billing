@@ -57,5 +57,21 @@ namespace Billing.WebApi.Models.Converter
                 Goods = order.Goods.Select(item => ToOrderGoodDto(item)).ToList()
             };
         }
+
+        public Order FromUpdateDto(UpdateOrderDto updateOrderDto)
+        {
+            return new Order
+            {
+                Id = updateOrderDto.Id,
+                CreationDate = updateOrderDto.CreationDate,
+                PaymentStatus = updateOrderDto.PaymentStatus,
+                DeliveryStatus = updateOrderDto.DeliveryStatus,
+                Customer = new Customer
+                {
+                    Id = updateOrderDto.CustomerId
+                },
+                Goods = updateOrderDto.Goods.Select(item => FromOrderGoodDto(item)).ToList()
+            };
+        }
     }
 }
