@@ -94,7 +94,7 @@ namespace Billing.WebApi.Controllers
         }
 
         [HttpPut]
-        public ActionResult<Result<GetComponentDto>> Put([FromBody] GetComponentDto componentDto)
+        public ActionResult<Result<GetComponentDto>> Put([FromBody] UpdateComponentDto componentDto)
         {
             var componentToUpdate = new Component
             {
