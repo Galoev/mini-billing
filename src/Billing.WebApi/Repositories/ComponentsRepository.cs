@@ -3,6 +3,7 @@ using Billing.WebApi.Repositories.Models;
 using Billing.WebApi.Client.Utility;
 using System;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Billing.WebApi.Repositories
 {
@@ -104,6 +105,23 @@ namespace Billing.WebApi.Repositories
                     UnitPrice = componentDbo.UnitPrice,
                     Description = componentDbo.Description
                 }
+            };
+        }
+
+        public Result<List<Component>> Get()
+        {
+            var listOfComponents = billingContext.Components.Select(c => new Component
+            {
+                Id = c.Id,
+                QuantityType = c.QuantityType,
+                UnitPrice = c.UnitPrice,
+                Description = c.Description
+            }).ToList();
+            return new Result<List<Component>>
+            {
+                IsSuccess = true,
+                Message = "List of component successfully found!",
+                Value = listOfComponents
             };
         }
 

@@ -4,6 +4,7 @@ using Billing.WebApi.Repositories;
 using Billing.WebApi.Client.Utility;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 
 namespace Billing.WebApi.Controllers
 {
@@ -38,7 +39,34 @@ namespace Billing.WebApi.Controllers
             };
         }
 
-        [HttpPost()]
+        [HttpGet]
+        public ActionResult<Result<List<GetComponentDto>>> GetAll()
+        {
+            var resultFromRepository = componentRepository.Get();
+            if (resultFromRepository.IsSuccess)
+            {
+                var listOfComponentDto = resultFromRepository.Value.ConvertAll(c => new GetComponentDto 
+                { 
+                    Id = c.Id,
+                    UnitPrice = c.UnitPrice,
+                    Description = c.Description,
+                    QuantityType = c.QuantityType
+                });
+                return new Result<List<GetComponentDto>>
+                {
+                    IsSuccess = true,
+                    Message = resultFromRepository.Message,
+                    Value = listOfComponentDto
+                };
+            }
+            return new Result<List<GetComponentDto>>
+            {
+                IsSuccess = false,
+                Message = resultFromRepository.Message
+            };
+        }
+
+        [HttpPost]
         public ActionResult<Result<GetComponentDto>> Post([FromBody] CreateComponentDto createComponentDto)
         {
             var componentToCreate = new Component
@@ -63,6 +91,33 @@ namespace Billing.WebApi.Controllers
         }
         : null
             });
+        }
+
+        [HttpPut]
+        public ActionResult<Result<GetComponentDto>> Put([FromBody] GetComponentDto componentDto)
+        {
+            var componentToUpdate = new Component
+            {
+                Id = componentDto.Id,
+                QuantityType = componentDto.QuantityType,
+                UnitPrice = componentDto.UnitPrice,
+                Description = componentDto.Description
+            };
+            var resultFromRepository = componentRepository.Update(componentToUpdate);
+            return new Result<GetComponentDto>
+            {
+                IsSuccess = resultFromRepository.IsSuccess,
+                Message = resultFromRepository.Message,
+                Value = resultFromRepository.Value != null
+                    ? new GetComponentDto
+                    {
+                        Id = resultFromRepository.Value.Id,
+                        QuantityType = resultFromRepository.Value.QuantityType,
+                        UnitPrice = resultFromRepository.Value.UnitPrice,
+                        Description = resultFromRepository.Value.Description
+                    }
+                    : null
+            };
         }
 
         [HttpDelete("{id}")]
