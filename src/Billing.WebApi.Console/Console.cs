@@ -103,7 +103,7 @@ namespace Billing.WebApi.Console
         {
             System.Console.WriteLine(hint);
 
-            string input = System.Console.ReadLine();
+            var input = System.Console.ReadLine();
             int number;
 
             while (!UserInputValidator.IsValidNumber(input, minBound, maxBound, out number))
@@ -144,20 +144,14 @@ namespace Billing.WebApi.Console
             System.Console.WriteLine();
 
             return phone;
-        } 
-
-        public Customer ReadCustomer()
-        {
-            var name = ReadLineWithHint("Enter customer name: ", isRequired: true);
-            var phone = ReadPhoneNumberWithHint("Enter customer phone number: ");
-            var info = ReadLineWithHint("Enter customer information: ");
-            return new Customer 
-            { 
-                Name = name, 
-                Phone = phone, 
-                AdditionalInfo = info 
-            };
         }
+
+        public Customer ReadCustomer() => new Customer
+        {
+            Name = ReadLineWithHint("Enter customer name: ", isRequired: true),
+            Phone = ReadPhoneNumberWithHint("Enter customer phone number: "),
+            AdditionalInfo = ReadLineWithHint("Enter customer information: ")
+        };
 
         public CreateOrder ReadOrder(List<GoodInfo> goodsInfo)
         {
@@ -245,6 +239,18 @@ namespace Billing.WebApi.Console
                 QuantityType = (QuantityType) quantityTypeNumber,
                 Components = goodComponents,
                 Description = description
+            };
+        }
+
+        public CreateComponent ReadComponent()
+        {
+            int quantityType = ReadNumberWithHint("Enter a number of quantity type, where kilogram - 1, litre - 2, piece - 3 ",
+                1, Enum.GetNames(typeof(QuantityType)).Length);
+            return new CreateComponent
+            {
+                UnitPrice = ReadPriceWithHint("Enter an unit price of the component: "),
+                Description = ReadLineWithHint("Enter a description of the component: "),
+                QuantityType = (QuantityType) quantityType
             };
         }
 

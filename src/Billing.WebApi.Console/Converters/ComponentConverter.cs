@@ -13,7 +13,7 @@ namespace Billing.WebApi.Console.Converters
             Description = componentDto.Description ?? string.Empty
         };
 
-        public static CreateComponentDto ToDto(Component component) => new CreateComponentDto
+        public static CreateComponentDto ToDto(CreateComponent component) => new CreateComponentDto
         {
             UnitPrice = component.UnitPrice,
             QuantityType = component.QuantityType,

@@ -40,6 +40,7 @@ namespace Billing.WebApi.Console
             });
             menu.Add("Create order", CreateOrder);
             menu.Add("Create good", CreateGood);
+            menu.Add("Create component", CreateComponent);
             menu.Add("Exit", Exit);
         }
 
@@ -143,6 +144,16 @@ namespace Billing.WebApi.Console
                 customer = null;
             }
             return customer;
+        }
+
+        static void CreateComponent()
+        {
+            var componentInfo = console.ReadComponent();
+            var resultWithCreatedComponent = editBilling.CreateComponent(componentInfo).Result;
+            if (resultWithCreatedComponent.IsSuccess)
+                console.PrintInfoMessage(resultWithCreatedComponent.Message);
+            else
+                console.PrintErrorMessage(resultWithCreatedComponent.Message);
         }
 
         static void Exit()

@@ -19,5 +19,6 @@ namespace Billing.WebApi.Console
         Customer ReadCustomer();
         CreateOrder ReadOrder(List<GoodInfo> goodsInfo);
         CreateGood ReadGood(List<Component> componentInfo);
+        CreateComponent ReadComponent();
     }
 }
