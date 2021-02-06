@@ -29,7 +29,8 @@ namespace Billing.WebApi
             services.AddScoped<IOrderConverter, OrderConverter>();
             services.AddScoped<IGoodsRepository, GoodsRepository>();
             services.AddScoped<IGoodConverter, GoodConverter>();
-            services.AddScoped<IComponentRepository, ComponentRepository>();
+            services.AddScoped<IComponentsRepository, ComponentsRepository>();
+            services.AddScoped<ICustomersRepository, CustomersRespository>();
             services.AddControllers();
         }
 

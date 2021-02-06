@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Billing.WebApi.Client.Models;
 using Billing.WebApi.Console.Models;
 
 namespace Billing.WebApi.Console
@@ -7,9 +7,9 @@ namespace Billing.WebApi.Console
     class Program
     {
         private static Menu menu;
-        private static Console console;
-        private static SearchBilling searchBilling;
-        private static EditBilling editBilling;
+        private static IConsole console;
+        private static ISearchBilling searchBilling;
+        private static IEditBilling editBilling;
         private static bool endProgram = false;
 
         static void Main(string[] args)
@@ -20,8 +20,9 @@ namespace Billing.WebApi.Console
             InitMainMenu();
             while (!endProgram)
             {
-                menu.Print();
-                int choose = console.ReadInt("Choose an option:", min: 1, max: menu.OptionsCount());
+                console.PrintMenu(menu);
+                int choose = console.ReadNumberWithHint("Choose an option:", 
+                    minBound: 1, maxBound: menu.Options.Count);
                 menu.ExecuteOption(choose - 1);
             }
         }
@@ -29,83 +30,135 @@ namespace Billing.WebApi.Console
         static void InitMainMenu()
         {
             menu = new Menu();
-            menu.Add("Display all orders", DisplayOrders);
+            menu.Add("Display all orders", () => 
+            {
+                var result = searchBilling.GetOrdersInfo().Result;
+                if (result.IsSuccess)
+                    console.PrintTable(result.Value);
+                else
+                    console.PrintErrorMessage(result.Message);
+            });
             menu.Add("Create order", CreateOrder);
+            menu.Add("Create good", CreateGood);
+            menu.Add("Create component", CreateComponent);
             menu.Add("Exit", Exit);
-        }
-
-        static void DisplayOrders()
-        {
-            console.PrintTable(searchBilling.GetInfoOrders());
         }
 
         static void CreateOrder()
         {
-            List<Customer> customers = searchBilling.GetCustomers();
-            Customer customer = null;
-
-            console.PrintTable(customers);
-            var customerMenu = new Menu();
-            customerMenu.Add("Chose customer", () => customer = customers[console.ReadInt("Enter customer number:", min: 1, max: customers.Count) - 1]);
-            customerMenu.Add("Create customer", () => customer = CreateCustomer());
-            customerMenu.Print();
-            int choose = console.ReadInt("Choose an option:", min: 1, max: customerMenu.OptionsCount());
-            customerMenu.ExecuteOption(choose - 1);
-
-            var goodsReady = false;
-            List<OrderGood> goods = searchBilling.GetOrderGoods();
-            List<InfoGood> infoGoods = searchBilling.GetInfoGoods();
-            List<OrderGood> orderGoods = new List<OrderGood>();
-            while (!goodsReady)
+            var resultWithListOfCustomers = searchBilling.GetCustomers().Result;
+            List<Customer> availableCustomers;
+            if (resultWithListOfCustomers.IsSuccess)
             {
-                OrderGood orderGood = null;
-                int quantity = -1;
-                console.PrintTable(infoGoods);
-                var goodsMenu = new Menu();
-                goodsMenu.Add("Chose good", () => {
-                    orderGood = goods[console.ReadInt("Enter good number:", min: 1, max: goods.Count) - 1];
-                    quantity = console.ReadInt("Enter the quantity of goods", min: 1, max: int.MaxValue);
-                    orderGood.Quantity = quantity;
-                    orderGoods.Add(orderGood);
-                });
-                goodsMenu.Add("Done", () => goodsReady = true);
-                goodsMenu.Print();
+                availableCustomers = resultWithListOfCustomers.Value;
+            } else
+            {
+                console.PrintErrorMessage(resultWithListOfCustomers.Message);
+                return;
+            }
+                
+            console.PrintTable(availableCustomers);
+            Customer chosenCustomer = null;
 
-                choose = console.ReadInt("Choose an option:", min: 1, max: goodsMenu.OptionsCount());
-                goodsMenu.ExecuteOption(choose - 1);
+            var customerChoosingMenu = new Menu();
+            customerChoosingMenu.Add("Choose customer", () =>
+            {
+                var customerNumber = console.ReadNumberWithHint("Enter customer number:",
+                    minBound: 1, maxBound: availableCustomers.Count);
+                chosenCustomer = availableCustomers[customerNumber - 1];
+            });
+            customerChoosingMenu.Add("Create customer", () => chosenCustomer = CreateCustomer());
+
+            bool canceled = false;
+            customerChoosingMenu.Add("Cancel", () => canceled = true);
+
+            console.PrintMenu(customerChoosingMenu);
+
+            int chosenOption;
+            while (chosenCustomer is null)
+            {
+                chosenOption = console.ReadNumberWithHint("Choose an option: ",
+                    minBound: 1, maxBound: customerChoosingMenu.Options.Count);
+                customerChoosingMenu.ExecuteOption(chosenOption - 1);
+                if (canceled)
+                    return;
             }
 
-            System.Console.WriteLine("Enter the order date:");
-            DateTime date = console.ReadDate();
-
-            CreateOrder order = new CreateOrder
+            var resultWithGoodsInfo = searchBilling.GetGoodsInfo().Result;
+            List<GoodInfo> goodsInfo;
+            if (resultWithGoodsInfo.IsSuccess)
             {
-                Customer = customer,
-                OrderDate = date,
-                Goods = orderGoods,
-                PaymentStatus = PaymentStatus.Unpaid,
-                DeliveryStatus = DeliveryStatus.DeliveryWaiting
-            };
+                goodsInfo = resultWithGoodsInfo.Value;
+            } else
+            {
+                console.PrintErrorMessage(resultWithGoodsInfo.Message);
+                return;
+            }
 
-            editBilling.CreateOrder(order);
-            System.Console.WriteLine("Order successfully created");
+            CreateOrder order = console.ReadOrder(goodsInfo);
+            order.CustomerId = chosenCustomer.Id;
+            order.PaymentStatus = PaymentStatus.Unpaid;
+            order.DeliveryStatus = DeliveryStatus.DeliveryWaiting;
+            
+            var resultWithCreatedOrder = editBilling.CreateOrder(order).Result;
+            if (resultWithCreatedOrder.IsSuccess)
+                console.PrintInfoMessage(resultWithCreatedOrder.Message);
+            else
+                console.PrintErrorMessage(resultWithCreatedOrder.Message);
+        }
+
+        static void CreateGood()
+        {
+            var resultWithComponentsInfo = searchBilling.GetComponents().Result;
+            List<Component> componentsInfo;
+            if (resultWithComponentsInfo.IsSuccess)
+            {
+                componentsInfo = resultWithComponentsInfo.Value;
+            }
+            else
+            {
+                console.PrintErrorMessage(resultWithComponentsInfo.Message);
+                return;
+            }
+
+            CreateGood good = console.ReadGood(componentsInfo);
+            
+            var resultWithCreatedOrder = editBilling.CreateGood(good).Result;
+            if (resultWithCreatedOrder.IsSuccess)
+                console.PrintInfoMessage(resultWithCreatedOrder.Message);
+            else
+                console.PrintErrorMessage(resultWithCreatedOrder.Message);
+        }
+
+        private static Customer CreateCustomer()
+        {
+            var customer = console.ReadCustomer();
+            var resultWithCreatedCustomer = editBilling.CreateCustomer(customer).Result;
+            if (resultWithCreatedCustomer.IsSuccess)
+            {
+                customer = resultWithCreatedCustomer.Value;
+                console.PrintInfoMessage(resultWithCreatedCustomer.Message);
+            } else
+            {
+                console.PrintErrorMessage(resultWithCreatedCustomer.Message);
+                customer = null;
+            }
+            return customer;
+        }
+
+        static void CreateComponent()
+        {
+            var componentInfo = console.ReadComponent();
+            var resultWithCreatedComponent = editBilling.CreateComponent(componentInfo).Result;
+            if (resultWithCreatedComponent.IsSuccess)
+                console.PrintInfoMessage(resultWithCreatedComponent.Message);
+            else
+                console.PrintErrorMessage(resultWithCreatedComponent.Message);
         }
 
         static void Exit()
         {
             endProgram = true;
-        }
-
-        static Customer CreateCustomer()
-        {
-            System.Console.WriteLine("Enter customer name: ");
-            var name = System.Console.ReadLine();
-            System.Console.WriteLine("Enter the customer's phone number: ");
-            var phone = System.Console.ReadLine();
-            System.Console.WriteLine("Enter customer information:");
-            var info = System.Console.ReadLine();
-            var customer = new Customer { Name = name, Phone = phone, AdditionalInfo = info };            
-            return customer;
         }
     }
 }

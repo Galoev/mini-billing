@@ -20,6 +20,22 @@ namespace Billing.WebApi.Models.Converter
             };
         }
 
+        public Good FromUpdateDto(UpdateGoodDto updateGoodDto)
+        {
+            return new Good
+            {
+                Id = updateGoodDto.Id,
+                QuantityType = updateGoodDto.QuantityType,
+                UnitPrice = updateGoodDto.UnitPrice,
+                Description = updateGoodDto.Description,
+                Components = updateGoodDto.Components.Select(c => new GoodComponent
+                {
+                    Id = c.Id,
+                    Quantity = c.Quantity
+                }).ToList()
+            };
+        }
+
         public GetGoodDto ToGetDto(Good good)
         {
             return new GetGoodDto

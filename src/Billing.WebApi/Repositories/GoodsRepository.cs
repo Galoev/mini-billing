@@ -1,6 +1,6 @@
 ﻿using Billing.WebApi.Models;
 using Billing.WebApi.Repositories.Models;
-using Billing.WebApi.Utility;
+using Billing.WebApi.Client.Utility;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

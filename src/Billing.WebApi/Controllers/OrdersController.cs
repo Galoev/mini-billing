@@ -3,8 +3,9 @@ using System;
 using System.Collections.Generic;
 using Billing.WebApi.Repositories;
 using Billing.WebApi.Client.Models;
-using Billing.WebApi.Utility;
+using Billing.WebApi.Client.Utility;
 using Billing.WebApi.Models.Converter;
+using System.Linq;
 
 namespace Billing.WebApi.Controllers
 {
@@ -22,9 +23,17 @@ namespace Billing.WebApi.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<GetOrderDto>> Get()
+        public ActionResult<Result<List<GetOrderDto>>> GetAll()
         {
-            throw new NotImplementedException();
+            var resultFromRepository = ordersRepository.GetAll();
+            return new Result<List<GetOrderDto>>
+            {
+                IsSuccess = resultFromRepository.IsSuccess,
+                Message = resultFromRepository.Message,
+                Value = resultFromRepository.Value != null
+                    ? resultFromRepository.Value.Select(o => orderConverter.ToGetDto(o)).ToList()
+                    : null
+            };
         }
 
         [HttpGet("{id}")]
@@ -61,9 +70,9 @@ namespace Billing.WebApi.Controllers
         }
 
         [HttpPut]
-        public ActionResult<Result<GetOrderDto>> Put([FromBody] CreateOrderDto orderDto)
+        public ActionResult<Result<GetOrderDto>> Put([FromBody] UpdateOrderDto orderDto)
         {
-            var resultFromRepository = ordersRepository.Update(orderConverter.FromCreateDto(orderDto));
+            var resultFromRepository = ordersRepository.Update(orderConverter.FromUpdateDto(orderDto));
             return new Result<GetOrderDto>
             {
                 IsSuccess = resultFromRepository.IsSuccess,

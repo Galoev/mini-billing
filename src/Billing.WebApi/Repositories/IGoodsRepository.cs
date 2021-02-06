@@ -1,5 +1,5 @@
 ﻿using Billing.WebApi.Models;
-using Billing.WebApi.Utility;
+using Billing.WebApi.Client.Utility;
 using System;
 using System.Collections.Generic;
 

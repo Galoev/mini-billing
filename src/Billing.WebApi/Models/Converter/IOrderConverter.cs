@@ -6,5 +6,6 @@ namespace Billing.WebApi.Models.Converter
     {
         public GetOrderDto ToGetDto(Order order);
         public Order FromCreateDto(CreateOrderDto orderDto);
+        public Order FromUpdateDto(UpdateOrderDto updateOrderDto);
     }
 }

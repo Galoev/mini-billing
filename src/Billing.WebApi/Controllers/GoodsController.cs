@@ -1,7 +1,7 @@
 ﻿using Billing.WebApi.Client.Models;
 using Billing.WebApi.Models.Converter;
 using Billing.WebApi.Repositories;
-using Billing.WebApi.Utility;
+using Billing.WebApi.Client.Utility;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -22,6 +22,7 @@ namespace Billing.WebApi.Controllers
             this.goodsRepository = goodsRepository;
         }
 
+        [HttpGet]
         public ActionResult<Result<List<GetGoodDto>>> GetAll()
         {
             var resultFromRepository = goodsRepository.Get();
@@ -74,9 +75,9 @@ namespace Billing.WebApi.Controllers
         }
 
         [HttpPut]
-        public ActionResult<Result<GetGoodDto>> Put([FromBody] CreateGoodDto goodDto)
+        public ActionResult<Result<GetGoodDto>> Put([FromBody] UpdateGoodDto goodDto)
         {
-            var resultFromRepository = goodsRepository.Update(goodConverter.FromCreateDto(goodDto));
+            var resultFromRepository = goodsRepository.Update(goodConverter.FromUpdateDto(goodDto));
             return new Result<GetGoodDto>
             {
                 IsSuccess = resultFromRepository.IsSuccess,

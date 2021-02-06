@@ -12,7 +12,4 @@
   <ItemGroup>
     <PackageReference Include="BetterConsoleTables" Version="1.1.2" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
 </Project>
