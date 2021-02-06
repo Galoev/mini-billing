@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.WebUtilities;
 using Billing.WebApi.Client.Models;
 using Billing.WebApi.Client.Utility;
 
@@ -25,7 +26,13 @@ namespace Billing.WebApi.Client.Clients
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 HttpResponseMessage response = await client.PostAsJsonAsync($"{BaseUrl}/{apiUrl}", orderToCreate);
-                return response.IsSuccessStatusCode ? await response.Content.ReadAsAsync<Result<GetOrderDto>>() : null;
+                return response.IsSuccessStatusCode 
+                    ? await response.Content.ReadAsAsync<Result<GetOrderDto>>() 
+                    : new Result<GetOrderDto> 
+                    { 
+                        IsSuccess = false, 
+                        Message = ReasonPhrases.GetReasonPhrase(Convert.ToInt32(response.StatusCode))
+                    };
             }
         }
 
@@ -34,7 +41,13 @@ namespace Billing.WebApi.Client.Clients
             using (var client = new HttpClient())
             {
                 HttpResponseMessage response = await client.GetAsync($"{BaseUrl}/{apiUrl}/{orderId}");
-                return response.IsSuccessStatusCode ? await response.Content.ReadAsAsync<Result<GetOrderDto>>() : null;
+                return response.IsSuccessStatusCode 
+                    ? await response.Content.ReadAsAsync<Result<GetOrderDto>>() 
+                    : new Result<GetOrderDto> 
+                    { 
+                        IsSuccess = false, 
+                        Message = ReasonPhrases.GetReasonPhrase(Convert.ToInt32(response.StatusCode))
+                    };
             }
         }
 
@@ -43,7 +56,13 @@ namespace Billing.WebApi.Client.Clients
             using (var client = new HttpClient())
             {
                 HttpResponseMessage response = await client.GetAsync($"{BaseUrl}/{apiUrl}");
-                return response.IsSuccessStatusCode ? await response.Content.ReadAsAsync<Result<List<GetOrderDto>>>() : null;
+                return response.IsSuccessStatusCode
+                    ? await response.Content.ReadAsAsync<Result<List<GetOrderDto>>>()
+                    : new Result<List<GetOrderDto>> 
+                    { 
+                        IsSuccess = false, 
+                        Message = ReasonPhrases.GetReasonPhrase(Convert.ToInt32(response.StatusCode))
+                    };
             }
         }
 
@@ -54,7 +73,13 @@ namespace Billing.WebApi.Client.Clients
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 HttpResponseMessage response = await client.PutAsJsonAsync($"{BaseUrl}/{apiUrl}", orderToUpdate);
-                return response.IsSuccessStatusCode ? await response.Content.ReadAsAsync<Result<GetOrderDto>>() : null;
+                return response.IsSuccessStatusCode 
+                    ? await response.Content.ReadAsAsync<Result<GetOrderDto>>() 
+                    : new Result<GetOrderDto> 
+                    { 
+                        IsSuccess = false, 
+                        Message = ReasonPhrases.GetReasonPhrase(Convert.ToInt32(response.StatusCode)) 
+                    };
             }
         }
 
@@ -63,7 +88,13 @@ namespace Billing.WebApi.Client.Clients
             using (var client = new HttpClient())
             {
                 HttpResponseMessage response = await client.DeleteAsync($"{BaseUrl}/{apiUrl}/{orderId}");
-                return response.IsSuccessStatusCode ? await response.Content.ReadAsAsync<Result<GetOrderDto>>() : null;
+                return response.IsSuccessStatusCode 
+                    ? await response.Content.ReadAsAsync<Result<GetOrderDto>>() 
+                    : new Result<GetOrderDto> 
+                    { 
+                        IsSuccess = false, 
+                        Message = ReasonPhrases.GetReasonPhrase(Convert.ToInt32(response.StatusCode))
+                    };
             }
         }
     }

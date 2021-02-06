@@ -5,6 +5,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Billing.WebApi.Client.Models;
 using Billing.WebApi.Client.Utility;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace Billing.WebApi.Client.Clients
 {
@@ -25,7 +26,13 @@ namespace Billing.WebApi.Client.Clients
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 HttpResponseMessage response = await client.PostAsJsonAsync($"{BaseUrl}/{apiUrl}", componentToCreate);
-                return response.IsSuccessStatusCode ? await response.Content.ReadAsAsync<Result<GetComponentDto>>() : null;
+                return response.IsSuccessStatusCode 
+                    ? await response.Content.ReadAsAsync<Result<GetComponentDto>>() 
+                    : new Result<GetComponentDto>
+                    {
+                        IsSuccess = false,
+                        Message = ReasonPhrases.GetReasonPhrase(Convert.ToInt32(response.StatusCode))
+                    };
             }
         }
 
@@ -34,7 +41,13 @@ namespace Billing.WebApi.Client.Clients
             using (var client = new HttpClient())
             {
                 HttpResponseMessage response = await client.GetAsync($"{BaseUrl}/{apiUrl}/{componentId}");
-                return response.IsSuccessStatusCode ? await response.Content.ReadAsAsync<Result<GetComponentDto>>() : null;
+                return response.IsSuccessStatusCode
+                    ? await response.Content.ReadAsAsync<Result<GetComponentDto>>()
+                    : new Result<GetComponentDto>
+                    {
+                        IsSuccess = false,
+                        Message = ReasonPhrases.GetReasonPhrase(Convert.ToInt32(response.StatusCode))
+                    };
             }
         }
 
@@ -43,7 +56,13 @@ namespace Billing.WebApi.Client.Clients
             using (var client = new HttpClient())
             {
                 HttpResponseMessage response = await client.GetAsync($"{BaseUrl}/{apiUrl}");
-                return response.IsSuccessStatusCode ? await response.Content.ReadAsAsync<Result<List<GetComponentDto>>>() : null;
+                return response.IsSuccessStatusCode
+                    ? await response.Content.ReadAsAsync<Result<List<GetComponentDto>>>()
+                    : new Result<List<GetComponentDto>>
+                    {
+                        IsSuccess = false,
+                        Message = ReasonPhrases.GetReasonPhrase(Convert.ToInt32(response.StatusCode))
+                    };
             }
         }
 
@@ -52,7 +71,13 @@ namespace Billing.WebApi.Client.Clients
             using (var client = new HttpClient())
             {
                 HttpResponseMessage response = await client.DeleteAsync($"{BaseUrl}/{apiUrl}/{componentId}");
-                return response.IsSuccessStatusCode ? await response.Content.ReadAsAsync<Result<GetComponentDto>>() : null;
+                return response.IsSuccessStatusCode
+                    ? await response.Content.ReadAsAsync<Result<GetComponentDto>>()
+                    : new Result<GetComponentDto>
+                    {
+                        IsSuccess = false,
+                        Message = ReasonPhrases.GetReasonPhrase(Convert.ToInt32(response.StatusCode))
+                    };
             }
         }
     }
