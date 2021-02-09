@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace Billing.WebApi.Repositories
 {
@@ -144,6 +145,30 @@ namespace Billing.WebApi.Repositories
                 Description = g.Description,
                 Components = g.GoodComponents.Select(c => new GoodComponent 
                 { 
+                    Id = c.ComponentId,
+                    Quantity = c.Quantity
+                }).ToList()
+            }).ToList();
+
+            return new Result<List<Good>>
+            {
+                IsSuccess = true,
+                Message = "List of goods successfully found!",
+                Value = listOfGoods
+            };
+        }
+
+        public Result<List<Good>> Get(Expression<Func<GoodDbo, bool>> predicate)
+        {
+            var listOfGoods = billingContext.Goods.Where(predicate)
+                .Select(g => new Good
+            {
+                Id = g.Id,
+                QuantityType = g.QuantityType,
+                UnitPrice = g.UnitPrice,
+                Description = g.Description,
+                Components = g.GoodComponents.Select(c => new GoodComponent
+                {
                     Id = c.ComponentId,
                     Quantity = c.Quantity
                 }).ToList()
