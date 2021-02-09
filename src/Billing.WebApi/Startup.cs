@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Billing.WebApi.Repositories;
 using Billing.WebApi.Repositories.Models;
 using Billing.WebApi.Models.Converter;
+using Billing.WebApi.Services;
 
 namespace Billing.WebApi
 {
@@ -31,6 +32,7 @@ namespace Billing.WebApi
             services.AddScoped<IGoodConverter, GoodConverter>();
             services.AddScoped<IComponentsRepository, ComponentsRepository>();
             services.AddScoped<ICustomersRepository, CustomersRespository>();
+            services.AddScoped<IOrderPriceCalculator, OrderPriceCalculator>();
             services.AddControllers();
         }
 

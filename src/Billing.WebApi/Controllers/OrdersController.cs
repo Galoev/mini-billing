@@ -6,6 +6,7 @@ using Billing.WebApi.Client.Models;
 using Billing.WebApi.Client.Utility;
 using Billing.WebApi.Models.Converter;
 using System.Linq;
+using Billing.WebApi.Services;
 
 namespace Billing.WebApi.Controllers
 {
@@ -15,11 +16,14 @@ namespace Billing.WebApi.Controllers
     {
         private readonly IOrdersRepository ordersRepository;
         private readonly IOrderConverter orderConverter;
+        private readonly IOrderPriceCalculator orderPriceCalculator;
 
-        public OrdersController(IOrdersRepository ordersRepository, IOrderConverter orderConverter)
+        public OrdersController(IOrdersRepository ordersRepository, 
+            IOrderConverter orderConverter, IOrderPriceCalculator orderPriceCalculator)
         {
             this.ordersRepository = ordersRepository;
             this.orderConverter = orderConverter;
+            this.orderPriceCalculator = orderPriceCalculator;
         }
 
         [HttpGet]
@@ -54,8 +58,7 @@ namespace Billing.WebApi.Controllers
         public ActionResult<Result<GetOrderDto>> Post([FromBody] CreateOrderDto orderDto)
         {
             var orderToPost = orderConverter.FromCreateDto(orderDto);
-            // TODO: добавить получение цены из компонента подсчета цены заказа
-            orderToPost.Price = 0.0M;
+            orderToPost.Price = orderPriceCalculator.CalculateOrderPrice(orderDto.Goods);
 
             var resultFromRepository = ordersRepository.Create(orderToPost);
 
