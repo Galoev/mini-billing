@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Billing.WebApi.Repositories.Models.Configuration;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Linq;
@@ -59,6 +60,8 @@ namespace Billing.WebApi.Repositories.Models
                     .IsRequired()
                     .HasColumnName("phone");
             });
+
+            modelBuilder.ApplyConfiguration(new CustomerConfiguration());
         }
 
         private void OnModelCreatingOrder(ModelBuilder modelBuilder)
@@ -119,6 +122,8 @@ namespace Billing.WebApi.Repositories.Models
 
                 entity.Property(e => e.Description).HasColumnName("description");        
             });
+
+            modelBuilder.ApplyConfiguration(new ComponentConfiguration());
         }
 
         private void OnModelCreatingOrderGood(ModelBuilder modelBuilder)
